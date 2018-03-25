@@ -1,0 +1,11 @@
+genome:
+    innmind/library:
+        type: template
+
+    innmind/crawler-app:
+        type: template
+
+    innmind/tower:
+        type: functional
+        actions:
+            - 'tower listen 1337 -d'
