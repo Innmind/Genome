@@ -11,133 +11,152 @@
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-551.5074 1206.5488,-551.5074 1206.5488,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster_arguments</title>
-<polygon fill="#3399ff" stroke="#000000" points="294.279,-92.9117 294.279,-181.8234 1126.279,-181.8234 1126.279,-92.9117 294.279,-92.9117"/>
-<text text-anchor="middle" x="710.279" y="-166.6234" font-family="Times,serif" font-size="14.00" fill="#000000">Arguments</text>
+<polygon fill="#3399ff" stroke="#000000" points="76.2698,-92.9117 76.2698,-181.8234 908.2698,-181.8234 908.2698,-92.9117 76.2698,-92.9117"/>
+<text text-anchor="middle" x="492.2698" y="-166.6234" font-family="Times,serif" font-size="14.00" fill="#000000">Arguments</text>
 </g>
 <!-- genomePath -->
 <g id="node1" class="node">
 <title>genomePath</title>
-<ellipse fill="none" stroke="#000000" cx="425.279" cy="-126.3675" rx="122.8302" ry="25.4118"/>
-<text text-anchor="middle" x="425.279" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">genomePath</text>
-<text text-anchor="middle" x="425.279" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Url\PathInterface)</text>
+<ellipse fill="none" stroke="#000000" cx="777.2698" cy="-126.3675" rx="122.8302" ry="25.4118"/>
+<text text-anchor="middle" x="777.2698" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">genomePath</text>
+<text text-anchor="middle" x="777.2698" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Url\PathInterface)</text>
 </g>
 <!-- pathToStoreExpressedGenes -->
 <g id="node2" class="node">
 <title>pathToStoreExpressedGenes</title>
-<ellipse fill="none" stroke="#000000" cx="993.279" cy="-126.3675" rx="124.9678" ry="25.4118"/>
-<text text-anchor="middle" x="993.279" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">pathToStoreExpressedGenes</text>
-<text text-anchor="middle" x="993.279" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(string)</text>
+<ellipse fill="none" stroke="#000000" cx="209.2698" cy="-126.3675" rx="124.9678" ry="25.4118"/>
+<text text-anchor="middle" x="209.2698" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">pathToStoreExpressedGenes</text>
+<text text-anchor="middle" x="209.2698" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(string)</text>
 </g>
 <!-- server -->
 <g id="node3" class="node">
 <title>server</title>
-<ellipse fill="none" stroke="#000000" cx="708.279" cy="-126.3675" rx="141.753" ry="25.4118"/>
-<text text-anchor="middle" x="708.279" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">server</text>
-<text text-anchor="middle" x="708.279" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Server\Control\Server)</text>
+<ellipse fill="none" stroke="#000000" cx="494.2698" cy="-126.3675" rx="141.753" ry="25.4118"/>
+<text text-anchor="middle" x="494.2698" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">server</text>
+<text text-anchor="middle" x="494.2698" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Server\Control\Server)</text>
 </g>
 <!-- defaultServer -->
-<g id="node10" class="node">
+<g id="node11" class="node">
 <title>defaultServer</title>
-<ellipse fill="none" stroke="#000000" cx="708.279" cy="-25.4558" rx="197.9345" ry="25.4118"/>
-<text text-anchor="middle" x="708.279" y="-28.2558" font-family="Times,serif" font-size="14.00" fill="#000000">defaultServer</text>
-<text text-anchor="middle" x="708.279" y="-14.2558" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Server\Control\ServerFactory::build)</text>
+<ellipse fill="none" stroke="#000000" cx="494.2698" cy="-25.4558" rx="197.9345" ry="25.4118"/>
+<text text-anchor="middle" x="494.2698" y="-28.2558" font-family="Times,serif" font-size="14.00" fill="#000000">defaultServer</text>
+<text text-anchor="middle" x="494.2698" y="-14.2558" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Server\Control\ServerFactory::build)</text>
 </g>
 <!-- server&#45;&gt;defaultServer -->
-<g id="edge8" class="edge">
+<g id="edge9" class="edge">
 <title>server&#45;&gt;defaultServer</title>
-<path fill="none" stroke="#000000" stroke-dasharray="1,5" d="M708.279,-100.9033C708.279,-88.8326 708.279,-74.209 708.279,-61.062"/>
-<polygon fill="#000000" stroke="#000000" points="711.7791,-60.9119 708.279,-50.912 704.7791,-60.912 711.7791,-60.9119"/>
-<text text-anchor="middle" x="737.6325" y="-71.7117" font-family="Times,serif" font-size="14.00" fill="#000000">defaults to</text>
+<path fill="none" stroke="#000000" stroke-dasharray="1,5" d="M494.2698,-100.9033C494.2698,-88.8326 494.2698,-74.209 494.2698,-61.062"/>
+<polygon fill="#000000" stroke="#000000" points="497.7699,-60.9119 494.2698,-50.912 490.7699,-60.912 497.7699,-60.9119"/>
+<text text-anchor="middle" x="523.6233" y="-71.7117" font-family="Times,serif" font-size="14.00" fill="#000000">defaults to</text>
 </g>
 <!-- commands -->
 <g id="node4" class="node">
 <title>commands</title>
-<polygon fill="#00ff00" stroke="#000000" points="948.989,-525.7547 803.279,-547.4726 657.569,-525.7547 657.705,-490.6145 948.853,-490.6145 948.989,-525.7547"/>
-<text text-anchor="middle" x="803.279" y="-518.8422" font-family="Times,serif" font-size="14.00" fill="#000000">commands</text>
-<text text-anchor="middle" x="803.279" y="-504.8422" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\CLI\Commands)</text>
+<polygon fill="#00ff00" stroke="#000000" points="750.9798,-525.7547 605.2698,-547.4726 459.5597,-525.7547 459.6957,-490.6145 750.8438,-490.6145 750.9798,-525.7547"/>
+<text text-anchor="middle" x="605.2698" y="-518.8422" font-family="Times,serif" font-size="14.00" fill="#000000">commands</text>
+<text text-anchor="middle" x="605.2698" y="-504.8422" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\CLI\Commands)</text>
 </g>
 <!-- command_express -->
 <g id="node5" class="node">
 <title>command_express</title>
-<ellipse fill="none" stroke="#000000" cx="803.279" cy="-422.1212" rx="165.6581" ry="25.4118"/>
-<text text-anchor="middle" x="803.279" y="-424.9212" font-family="Times,serif" font-size="14.00" fill="#000000">command.express</text>
-<text text-anchor="middle" x="803.279" y="-410.9212" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Command\Express)</text>
+<ellipse fill="none" stroke="#000000" cx="434.2698" cy="-422.1212" rx="165.6581" ry="25.4118"/>
+<text text-anchor="middle" x="434.2698" y="-424.9212" font-family="Times,serif" font-size="14.00" fill="#000000">command.express</text>
+<text text-anchor="middle" x="434.2698" y="-410.9212" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Command\Express)</text>
 </g>
 <!-- commands&#45;&gt;command_express -->
 <g id="edge1" class="edge">
 <title>commands&#45;&gt;command_express</title>
-<path fill="none" stroke="#000000" d="M803.279,-490.3779C803.279,-480.3351 803.279,-468.6437 803.279,-457.8042"/>
-<polygon fill="#000000" stroke="#000000" points="806.7791,-457.7545 803.279,-447.7545 799.7791,-457.7545 806.7791,-457.7545"/>
+<path fill="none" stroke="#000000" d="M558.5433,-490.3779C536.7187,-478.3908 510.6179,-464.0551 487.9827,-451.6228"/>
+<polygon fill="#000000" stroke="#000000" points="489.62,-448.5289 479.1701,-446.7825 486.2501,-454.6644 489.62,-448.5289"/>
+</g>
+<!-- command_genes -->
+<g id="node6" class="node">
+<title>command_genes</title>
+<ellipse fill="none" stroke="#000000" cx="777.2698" cy="-422.1212" rx="159.4525" ry="25.4118"/>
+<text text-anchor="middle" x="777.2698" y="-424.9212" font-family="Times,serif" font-size="14.00" fill="#000000">command.genes</text>
+<text text-anchor="middle" x="777.2698" y="-410.9212" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Command\Genes)</text>
+</g>
+<!-- commands&#45;&gt;command_genes -->
+<g id="edge2" class="edge">
+<title>commands&#45;&gt;command_genes</title>
+<path fill="none" stroke="#000000" d="M652.2695,-490.3779C674.3095,-478.3429 700.6853,-463.9403 723.5157,-451.4737"/>
+<polygon fill="#000000" stroke="#000000" points="725.3023,-454.486 732.4016,-446.6216 721.9475,-448.3423 725.3023,-454.486"/>
 </g>
 <!-- express -->
-<g id="node6" class="node">
+<g id="node7" class="node">
 <title>express</title>
-<polygon fill="#00ff00" stroke="#000000" points="765.965,-337.9127 615.279,-359.6306 464.593,-337.9127 464.7336,-302.7725 765.8244,-302.7725 765.965,-337.9127"/>
-<text text-anchor="middle" x="615.279" y="-331.0002" font-family="Times,serif" font-size="14.00" fill="#000000">express</text>
-<text text-anchor="middle" x="615.279" y="-317.0002" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Express)</text>
+<polygon fill="#00ff00" stroke="#000000" points="737.9558,-337.9127 587.2698,-359.6306 436.5837,-337.9127 436.7244,-302.7725 737.8152,-302.7725 737.9558,-337.9127"/>
+<text text-anchor="middle" x="587.2698" y="-331.0002" font-family="Times,serif" font-size="14.00" fill="#000000">express</text>
+<text text-anchor="middle" x="587.2698" y="-317.0002" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Express)</text>
 </g>
 <!-- command_express&#45;&gt;express -->
-<g id="edge2" class="edge">
+<g id="edge3" class="edge">
 <title>command_express&#45;&gt;express</title>
-<path fill="none" stroke="#000000" d="M754.375,-397.6898C729.558,-385.2917 699.2452,-370.148 673.2593,-357.166"/>
-<polygon fill="#000000" stroke="#000000" points="674.7744,-354.0105 664.2644,-352.6723 671.646,-360.2725 674.7744,-354.0105"/>
+<path fill="none" stroke="#000000" d="M474.8693,-397.1987C493.9173,-385.5058 516.8056,-371.4555 536.9428,-359.0941"/>
+<polygon fill="#000000" stroke="#000000" points="538.9892,-361.9448 545.6805,-353.7303 535.3271,-355.9791 538.9892,-361.9448"/>
 </g>
 <!-- filesystem -->
-<g id="node7" class="node">
+<g id="node8" class="node">
 <title>filesystem</title>
-<ellipse fill="none" stroke="#000000" cx="993.279" cy="-328.2002" rx="209.0398" ry="25.4118"/>
-<text text-anchor="middle" x="993.279" y="-331.0002" font-family="Times,serif" font-size="14.00" fill="#000000">filesystem</text>
-<text text-anchor="middle" x="993.279" y="-317.0002" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Filesystem\Adapter\FilesystemAdapter)</text>
+<ellipse fill="none" stroke="#000000" cx="209.2698" cy="-328.2002" rx="209.0398" ry="25.4118"/>
+<text text-anchor="middle" x="209.2698" y="-331.0002" font-family="Times,serif" font-size="14.00" fill="#000000">filesystem</text>
+<text text-anchor="middle" x="209.2698" y="-317.0002" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Filesystem\Adapter\FilesystemAdapter)</text>
 </g>
 <!-- command_express&#45;&gt;filesystem -->
-<g id="edge3" class="edge">
+<g id="edge4" class="edge">
 <title>command_express&#45;&gt;filesystem</title>
-<path fill="none" stroke="#000000" d="M852.7033,-397.6898C877.5875,-385.3889 907.9393,-370.3854 934.0631,-357.4719"/>
-<polygon fill="#000000" stroke="#000000" points="935.6976,-360.5682 943.1112,-352.9992 932.5956,-354.2931 935.6976,-360.5682"/>
-</g>
-<!-- express&#45;&gt;server -->
-<g id="edge5" class="edge">
-<title>express&#45;&gt;server</title>
-<path fill="none" stroke="#000000" d="M627.0575,-302.638C643.5735,-266.7942 673.6671,-201.4839 692.2223,-161.2144"/>
-<polygon fill="#000000" stroke="#000000" points="695.4434,-162.5872 696.4496,-152.0402 689.0859,-159.6577 695.4434,-162.5872"/>
+<path fill="none" stroke="#000000" d="M376.9106,-398.178C346.5742,-385.5148 309.1309,-369.8849 277.3317,-356.6111"/>
+<polygon fill="#000000" stroke="#000000" points="278.6685,-353.3765 268.092,-352.7542 275.972,-359.8363 278.6685,-353.3765"/>
 </g>
 <!-- genome -->
-<g id="node8" class="node">
+<g id="node9" class="node">
 <title>genome</title>
-<ellipse fill="none" stroke="#000000" cx="425.279" cy="-234.2792" rx="146.6428" ry="25.4118"/>
-<text text-anchor="middle" x="425.279" y="-237.0792" font-family="Times,serif" font-size="14.00" fill="#000000">genome</text>
-<text text-anchor="middle" x="425.279" y="-223.0792" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Genome::load)</text>
+<ellipse fill="none" stroke="#000000" cx="777.2698" cy="-234.2792" rx="146.6428" ry="25.4118"/>
+<text text-anchor="middle" x="777.2698" y="-237.0792" font-family="Times,serif" font-size="14.00" fill="#000000">genome</text>
+<text text-anchor="middle" x="777.2698" y="-223.0792" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Genome::load)</text>
+</g>
+<!-- command_genes&#45;&gt;genome -->
+<g id="edge11" class="edge">
+<title>command_genes&#45;&gt;genome</title>
+<path fill="none" stroke="#000000" d="M777.2698,-396.3965C777.2698,-363.7483 777.2698,-307.2469 777.2698,-270.3166"/>
+<polygon fill="#000000" stroke="#000000" points="780.7699,-269.994 777.2698,-259.994 773.7699,-269.994 780.7699,-269.994"/>
+</g>
+<!-- express&#45;&gt;server -->
+<g id="edge6" class="edge">
+<title>express&#45;&gt;server</title>
+<path fill="none" stroke="#000000" d="M575.4913,-302.638C558.9752,-266.7942 528.8817,-201.4839 510.3264,-161.2144"/>
+<polygon fill="#000000" stroke="#000000" points="513.4629,-159.6577 506.0992,-152.0402 507.1053,-162.5872 513.4629,-159.6577"/>
 </g>
 <!-- express&#45;&gt;genome -->
-<g id="edge4" class="edge">
+<g id="edge5" class="edge">
 <title>express&#45;&gt;genome</title>
-<path fill="none" stroke="#000000" d="M563.6116,-302.66C538.7529,-290.3717 508.8561,-275.5931 483.2261,-262.9237"/>
-<polygon fill="#000000" stroke="#000000" points="484.5093,-259.6538 473.9938,-258.36 481.4073,-265.929 484.5093,-259.6538"/>
+<path fill="none" stroke="#000000" d="M638.9371,-302.66C663.7959,-290.3717 693.6927,-275.5931 719.3226,-262.9237"/>
+<polygon fill="#000000" stroke="#000000" points="721.1414,-265.929 728.555,-258.36 718.0394,-259.6538 721.1414,-265.929"/>
 </g>
 <!-- filesystem&#45;&gt;pathToStoreExpressedGenes -->
-<g id="edge9" class="edge">
+<g id="edge10" class="edge">
 <title>filesystem&#45;&gt;pathToStoreExpressedGenes</title>
-<path fill="none" stroke="#000000" d="M993.279,-302.638C993.279,-267.0967 993.279,-202.5841 993.279,-162.2392"/>
-<polygon fill="#000000" stroke="#000000" points="996.7791,-162.0402 993.279,-152.0402 989.7791,-162.0402 996.7791,-162.0402"/>
+<path fill="none" stroke="#000000" d="M209.2698,-302.638C209.2698,-267.0967 209.2698,-202.5841 209.2698,-162.2392"/>
+<polygon fill="#000000" stroke="#000000" points="212.7699,-162.0402 209.2698,-152.0402 205.7699,-162.0402 212.7699,-162.0402"/>
 </g>
 <!-- genome&#45;&gt;genomePath -->
-<g id="edge7" class="edge">
+<g id="edge8" class="edge">
 <title>genome&#45;&gt;genomePath</title>
-<path fill="none" stroke="#000000" d="M425.279,-208.7057C425.279,-194.8303 425.279,-177.4542 425.279,-162.2451"/>
-<polygon fill="#000000" stroke="#000000" points="428.7791,-162.1315 425.279,-152.1315 421.7791,-162.1315 428.7791,-162.1315"/>
+<path fill="none" stroke="#000000" d="M777.2698,-208.7057C777.2698,-194.8303 777.2698,-177.4542 777.2698,-162.2451"/>
+<polygon fill="#000000" stroke="#000000" points="780.7699,-162.1315 777.2698,-152.1315 773.7699,-162.1315 780.7699,-162.1315"/>
 </g>
 <!-- loader -->
-<g id="node9" class="node">
+<g id="node10" class="node">
 <title>loader</title>
-<ellipse fill="none" stroke="#000000" cx="142.279" cy="-126.3675" rx="142.0583" ry="25.4118"/>
-<text text-anchor="middle" x="142.279" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">loader</text>
-<text text-anchor="middle" x="142.279" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Loader\Yaml)</text>
+<ellipse fill="none" stroke="#000000" cx="1060.2698" cy="-126.3675" rx="142.0583" ry="25.4118"/>
+<text text-anchor="middle" x="1060.2698" y="-129.1675" font-family="Times,serif" font-size="14.00" fill="#000000">loader</text>
+<text text-anchor="middle" x="1060.2698" y="-115.1675" font-family="Times,serif" font-size="14.00" fill="#000000">(Innmind\Genome\Loader\Yaml)</text>
 </g>
 <!-- genome&#45;&gt;loader -->
-<g id="edge6" class="edge">
+<g id="edge7" class="edge">
 <title>genome&#45;&gt;loader</title>
-<path fill="none" stroke="#000000" d="M364.2206,-210.9968C319.528,-193.9549 258.8031,-170.7997 212.1692,-153.0176"/>
-<polygon fill="#000000" stroke="#000000" points="213.3322,-149.7153 202.7414,-149.4227 210.8381,-156.2559 213.3322,-149.7153"/>
+<path fill="none" stroke="#000000" d="M838.3281,-210.9968C883.0208,-193.9549 943.7457,-170.7997 990.3796,-153.0176"/>
+<polygon fill="#000000" stroke="#000000" points="991.7106,-156.2559 999.8074,-149.4227 989.2166,-149.7153 991.7106,-156.2559"/>
 </g>
 </g>
 </svg>

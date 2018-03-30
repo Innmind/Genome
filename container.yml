@@ -10,11 +10,15 @@ expose:
 services:
     commands Innmind\CLI\Commands:
         - $command.express
+        - $command.genes
 
     command:
         express Innmind\Genome\Command\Express:
             - $express
             - $filesystem
+
+        genes Innmind\Genome\Command\Genes:
+            - $genome
 
     express Innmind\Genome\Express:
         - $genome
