@@ -3,11 +3,14 @@ declare(strict_types = 1);
 
 namespace Innmind\Genome;
 
+use Innmind\Genome\Gene\Name;
 use Innmind\Url\PathInterface;
 use Innmind\Immutable\{
     Sequence,
     MapInterface,
     Map,
+    SetInterface,
+    Set,
 };
 
 final class Genome
@@ -40,5 +43,18 @@ final class Genome
     public function contains(string $name): bool
     {
         return $this->genes->contains($name);
+    }
+
+    /**
+     * @return SetInterface<Name>
+     */
+    public function genes(): SetInterface
+    {
+        return $this->genes->values()->reduce(
+            Set::of(Name::class),
+            static function(SetInterface $names, Gene $gene): SetInterface {
+                return $names->add($gene->name());
+            }
+        );
     }
 }

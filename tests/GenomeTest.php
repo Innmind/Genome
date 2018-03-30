@@ -10,6 +10,7 @@ use Innmind\Genome\{
     Loader,
 };
 use Innmind\Url\PathInterface;
+use Innmind\Immutable\SetInterface;
 use PHPUnit\Framework\TestCase;
 
 class GenomeTest extends TestCase
@@ -26,6 +27,12 @@ class GenomeTest extends TestCase
         $this->assertFalse($genome->contains('foobar'));
         $this->assertSame($first, $genome->get('foo/bar'));
         $this->assertSame($second, $genome->get('foo/baz'));
+        $this->assertInstanceOf(SetInterface::class, $genome->genes());
+        $this->assertSame(Name::class, (string) $genome->genes()->type());
+        $this->assertSame(
+            [$first->name(), $second->name()],
+            $genome->genes()->toPrimitive()
+        );
     }
 
     public function testLoad()
