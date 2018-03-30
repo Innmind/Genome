@@ -11,22 +11,56 @@ use Innmind\CLI\{
     Environment,
 };
 use Innmind\Url\Path;
+use Innmind\Filesystem\{
+    Adapter,
+    File\File,
+    Stream\StringStream,
+};
 
 final class Express implements Command
 {
-    private $express;
+    private const FILE = 'expressed-genes.json';
 
-    public function __construct(Runner $express)
+    private $express;
+    private $filesystem;
+
+    public function __construct(Runner $express, Adapter $filesystem)
     {
         $this->express = $express;
+        $this->filesystem = $filesystem;
     }
 
     public function __invoke(Environment $env, Arguments $arguments, Options $options): void
     {
         ($this->express)(
-            $arguments->get('gene'),
-            new Path($arguments->get('path'))
+            $gene = $arguments->get('gene'),
+            $path = new Path($arguments->get('path'))
         );
+
+        $this->persist($gene, $path);
+    }
+
+    private function persist(string $gene, Path $path): void
+    {
+        $expressed = [];
+
+        if ($this->filesystem->has(self::FILE)) {
+            $content = $this
+                ->filesystem
+                ->get(self::FILE)
+                ->content();
+            $expressed = json_decode((string) $content, true);
+        }
+
+        $expressed[] = [
+            'gene' => $gene,
+            'path' => (string) $path,
+        ];
+
+        $this->filesystem->add(new File(
+            self::FILE,
+            new StringStream(json_encode($expressed, JSON_PRETTY_PRINT))
+        ));
     }
 
     public function __toString(): string
