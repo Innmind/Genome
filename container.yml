@@ -1,0 +1,32 @@
+arguments:
+    genomePath: Innmind\Url\PathInterface
+    pathToStoreExpressedGenes: string
+    server: Innmind\Server\Control\Server ?? $defaultServer
+
+expose:
+    commands: $commands
+    express: $express
+
+services:
+    commands Innmind\CLI\Commands:
+        - $command.express
+
+    command:
+        express Innmind\Genome\Command\Express:
+            - $express
+            - $filesystem
+
+    express Innmind\Genome\Express:
+        - $genome
+        - $server
+
+    genome Innmind\Genome\Genome::load:
+        - $loader
+        - $genomePath
+
+    loader Innmind\Genome\Loader\Yaml: []
+
+    filesystem Innmind\Filesystem\Adapter\FilesystemAdapter:
+        - $pathToStoreExpressedGenes
+
+    defaultServer Innmind\Server\Control\ServerFactory::build: []

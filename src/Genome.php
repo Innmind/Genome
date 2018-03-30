@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\Genome;
 
+use Innmind\Url\PathInterface;
 use Innmind\Immutable\{
     Sequence,
     MapInterface,
@@ -24,6 +25,11 @@ final class Genome
                 );
             }
         );
+    }
+
+    public static function load(Loader $load, PathInterface $path): self
+    {
+        return $load($path);
     }
 
     public function get(string $name): Gene

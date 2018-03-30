@@ -7,7 +7,9 @@ use Innmind\Genome\{
     Genome,
     Gene,
     Gene\Name,
+    Loader,
 };
+use Innmind\Url\PathInterface;
 use PHPUnit\Framework\TestCase;
 
 class GenomeTest extends TestCase
@@ -24,5 +26,20 @@ class GenomeTest extends TestCase
         $this->assertFalse($genome->contains('foobar'));
         $this->assertSame($first, $genome->get('foo/bar'));
         $this->assertSame($second, $genome->get('foo/baz'));
+    }
+
+    public function testLoad()
+    {
+        $path = $this->createMock(PathInterface::class);
+        $load = $this->createMock(Loader::class);
+        $load
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($path)
+            ->willReturn($expected = new Genome);
+
+        $genome = Genome::load($load, $path);
+
+        $this->assertSame($expected, $genome);
     }
 }
