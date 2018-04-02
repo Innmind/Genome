@@ -10,13 +10,15 @@ use Innmind\Genome\{
     Gene\Name,
 };
 use Innmind\Url\PathInterface;
+use Innmind\Config\Config;
 use Symfony\Component\Yaml\Yaml as Parser;
 
 final class Yaml implements Loader
 {
     public function __invoke(PathInterface $path): Genome
     {
-        $config = Parser::parseFile((string) $path);
+        $structure = (new Config)->build(Parser::parseFile(__DIR__.'/../../schema.yml'));
+        $config = $structure->process(Parser::parseFile((string) $path));
         $genes = [];
 
         foreach ($config['genome'] as $name => $gene) {

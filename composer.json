@@ -22,7 +22,8 @@
         "symfony/yaml": "^4.0",
         "innmind/cli": "^1.2",
         "innmind/filesystem": "^3.1",
-        "innmind/compose": "^1.4"
+        "innmind/compose": "^1.4",
+        "innmind/config": "^1.1"
     },
     "autoload": {
         "psr-4": {

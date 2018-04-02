@@ -10,6 +10,7 @@ use Innmind\Genome\{
     Gene\Type,
 };
 use Innmind\Url\Path;
+use Innmind\Config\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class YamlTest extends TestCase
@@ -35,5 +36,12 @@ class YamlTest extends TestCase
             ['tower listen 1337 -d'],
             $genome->get('innmind/tower')->actions()->toPrimitive()
         );
+    }
+
+    public function testThrowWhenInvalidStructure()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        (new Yaml)(new Path('fixtures/invalid.yml'));
     }
 }
