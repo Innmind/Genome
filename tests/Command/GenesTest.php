@@ -16,7 +16,10 @@ use Innmind\CLI\{
     Environment,
 };
 use Innmind\Stream\Writable;
-use Innmind\Immutable\Str;
+use Innmind\Immutable\{
+    Str,
+    Stream,
+};
 use PHPUnit\Framework\TestCase;
 
 class GenesTest extends TestCase
@@ -43,8 +46,8 @@ USAGE;
     public function testInvokation()
     {
         $command = new Genes(new Genome(
-            Gene::template(new Name('foo/bar')),
-            Gene::template(new Name('bar/baz'))
+            Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string')),
+            Gene::template(new Name('bar/baz'), Stream::of('string'), Stream::of('string'))
         ));
         $env = $this->createMock(Environment::class);
         $env

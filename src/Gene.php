@@ -17,22 +17,42 @@ final class Gene
     private $type;
     private $name;
     private $actions;
+    private $update;
 
-    private function __construct(Type $type, Name $name, string ...$actions)
-    {
+    private function __construct(
+        Type $type,
+        Name $name,
+        StreamInterface $actions,
+        StreamInterface $update
+    ) {
+        if ((string) $actions->type() !== 'string') {
+            throw new \TypeError('Argument 3 must be of type StreamInterface<string>');
+        }
+
+        if ((string) $update->type() !== 'string') {
+            throw new \TypeError('Argument 4 must be of type StreamInterface<string>');
+        }
+
         $this->type = $type;
         $this->name = $name;
-        $this->actions = Stream::of('string', ...$actions);
+        $this->actions = $actions;
+        $this->update = $update;
     }
 
-    public static function template(Name $name, string ...$actions): self
-    {
-        return new self(Type::template(), $name, ...$actions);
+    public static function template(
+        Name $name,
+        StreamInterface $actions,
+        StreamInterface $update
+    ): self {
+        return new self(Type::template(), $name, $actions, $update);
     }
 
-    public static function functional(Name $name, string ...$actions): self
-    {
-        return new self(Type::functional(), $name, ...$actions);
+    public static function functional(
+        Name $name,
+        StreamInterface $actions,
+        StreamInterface $update
+    ): self {
+        return new self(Type::functional(), $name, $actions, $update);
     }
 
     public function type(): Type
@@ -51,5 +71,13 @@ final class Gene
     public function actions(): StreamInterface
     {
         return $this->actions;
+    }
+
+    /**
+     * @return StreamInterface<string>
+     */
+    public function update(): StreamInterface
+    {
+        return $this->update;
     }
 }

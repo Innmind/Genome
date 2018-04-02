@@ -27,7 +27,10 @@ use Innmind\Filesystem\{
     File\File,
     Stream\StringStream,
 };
-use Innmind\Immutable\Map;
+use Innmind\Immutable\{
+    Map,
+    Stream,
+};
 use PHPUnit\Framework\TestCase;
 
 class ExpressTest extends TestCase
@@ -41,7 +44,11 @@ class ExpressTest extends TestCase
         $this->command = new Express(
             new Runner(
                 new Genome(
-                    Gene::template(new Name('foo/bar'))
+                    Gene::template(
+                        new Name('foo/bar'),
+                        Stream::of('string'),
+                        Stream::of('string')
+                    )
                 ),
                 $this->server = $this->createMock(Server::class)
             ),

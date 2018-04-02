@@ -21,6 +21,7 @@ use Innmind\Url\{
     PathInterface,
     Path,
 };
+use Innmind\Immutable\Stream;
 use PHPUnit\Framework\TestCase;
 
 class ExpressTest extends TestCase
@@ -42,7 +43,7 @@ class ExpressTest extends TestCase
     {
         $express = new Express(
             new Genome(
-                Gene::template(new Name('foo/bar'))
+                Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string'))
             ),
             $server = $this->createMock(Server::class)
         );
@@ -76,7 +77,7 @@ class ExpressTest extends TestCase
     {
         $express = new Express(
             new Genome(
-                Gene::functional(new Name('foo/bar'))
+                Gene::functional(new Name('foo/bar'), Stream::of('string'), Stream::of('string'))
             ),
             $server = $this->createMock(Server::class)
         );
@@ -110,7 +111,11 @@ class ExpressTest extends TestCase
     {
         $express = new Express(
             new Genome(
-                Gene::functional(new Name('foo/bar'), 'action1', 'action2')
+                Gene::functional(
+                    new Name('foo/bar'),
+                    Stream::of('string', 'action1', 'action2'),
+                    Stream::of('string')
+                )
             ),
             $server = $this->createMock(Server::class)
         );
@@ -163,7 +168,11 @@ class ExpressTest extends TestCase
     {
         $express = new Express(
             new Genome(
-                Gene::functional(new Name('foo/bar'), 'action1', 'action2')
+                Gene::functional(
+                    new Name('foo/bar'),
+                    Stream::of('string', 'action1', 'action2'),
+                    Stream::of('string')
+                )
             ),
             $server = $this->createMock(Server::class)
         );

@@ -2,3 +2,4 @@ genome:
     prototype<string>:
         type: enum(functional|template)
         actions: stream<string>
+        update: stream<string>

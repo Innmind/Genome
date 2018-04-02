@@ -10,7 +10,10 @@ use Innmind\Genome\{
     Loader,
 };
 use Innmind\Url\PathInterface;
-use Innmind\Immutable\SetInterface;
+use Innmind\Immutable\{
+    SetInterface,
+    Stream,
+};
 use PHPUnit\Framework\TestCase;
 
 class GenomeTest extends TestCase
@@ -18,8 +21,8 @@ class GenomeTest extends TestCase
     public function testInterface()
     {
         $genome = new Genome(
-            $first = Gene::template(new Name('foo/bar')),
-            $second = Gene::template(new Name('foo/baz'))
+            $first = Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string')),
+            $second = Gene::template(new Name('foo/baz'), Stream::of('string'), Stream::of('string'))
         );
 
         $this->assertTrue($genome->contains('foo/bar'));
