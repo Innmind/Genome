@@ -24,7 +24,7 @@ final class Yaml implements Loader
         foreach ($config['genome'] as $name => $gene) {
             $genes[] = Gene::{$gene['type']}(
                 new Name($name),
-                ...$gene['actions'] ?? []
+                ...$gene['actions']
             );
         }
 

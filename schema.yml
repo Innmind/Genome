@@ -1,4 +1,4 @@
 genome:
     prototype<string>:
         type: enum(functional|template)
-        actions: set<string>
+        actions: stream<string>
