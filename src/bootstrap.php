@@ -21,6 +21,10 @@ function bootstrap(PathInterface $genome, Adapter $storage):Commands
             new Mutate($genome, $server),
             $storage
         ),
+        new Command\Suppress(
+            new Suppress($genome, $server),
+            $storage
+        ),
         new Command\Genes($genome)
     );
 }

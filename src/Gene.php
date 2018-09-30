@@ -18,12 +18,14 @@ final class Gene
     private $name;
     private $actions;
     private $mutations;
+    private $suppressions;
 
     private function __construct(
         Type $type,
         Name $name,
         StreamInterface $actions,
-        StreamInterface $mutations
+        StreamInterface $mutations,
+        StreamInterface $suppressions
     ) {
         if ((string) $actions->type() !== 'string') {
             throw new \TypeError('Argument 3 must be of type StreamInterface<string>');
@@ -33,35 +35,44 @@ final class Gene
             throw new \TypeError('Argument 4 must be of type StreamInterface<string>');
         }
 
+        if ((string) $suppressions->type() !== 'string') {
+            throw new \TypeError('Argument 5 must be of type StreamInterface<string>');
+        }
+
         $this->type = $type;
         $this->name = $name;
         $this->actions = $actions;
         $this->mutations = $mutations;
+        $this->suppressions = $suppressions;
     }
 
     public static function template(
         Name $name,
         StreamInterface $actions = null,
-        StreamInterface $mutations = null
+        StreamInterface $mutations = null,
+        StreamInterface $suppressions = null
     ): self {
         return new self(
             Type::template(),
             $name,
             $actions ?? Stream::of('string'),
-            $mutations ?? Stream::of('string')
+            $mutations ?? Stream::of('string'),
+            $suppressions ?? Stream::of('string')
         );
     }
 
     public static function functional(
         Name $name,
         StreamInterface $actions = null,
-        StreamInterface $mutations = null
+        StreamInterface $mutations = null,
+        StreamInterface $suppressions = null
     ): self {
         return new self(
             Type::functional(),
             $name,
             $actions ?? Stream::of('string'),
-            $mutations ?? Stream::of('string')
+            $mutations ?? Stream::of('string'),
+            $suppressions ?? Stream::of('string')
         );
     }
 
@@ -89,5 +100,13 @@ final class Gene
     public function mutations(): StreamInterface
     {
         return $this->mutations;
+    }
+
+    /**
+     * @return StreamInterface<string>
+     */
+    public function suppressions(): StreamInterface
+    {
+        return $this->suppressions;
     }
 }

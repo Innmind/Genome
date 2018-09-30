@@ -21,7 +21,8 @@ class GeneTest extends TestCase
         $template = Gene::template(
             $name = new Name('innmind/library'),
             Stream::of('string', 'foo', 'bar'),
-            Stream::of('string', 'baz', 'foobar')
+            Stream::of('string', 'baz', 'foobar'),
+            Stream::of('string', 'foobaz')
         );
 
         $this->assertInstanceOf(Gene::class, $template);
@@ -33,6 +34,9 @@ class GeneTest extends TestCase
         $this->assertInstanceOf(StreamInterface::class, $template->mutations());
         $this->assertSame('string', (string) $template->mutations()->type());
         $this->assertSame(['baz', 'foobar'], $template->mutations()->toPrimitive());
+        $this->assertInstanceOf(StreamInterface::class, $template->suppressions());
+        $this->assertSame('string', (string) $template->suppressions()->type());
+        $this->assertSame(['foobaz'], $template->suppressions()->toPrimitive());
 
         $this->assertSame(
             Type::functional(),
@@ -54,5 +58,18 @@ class GeneTest extends TestCase
         $this->expectExceptionMessage('Argument 4 must be of type StreamInterface<string>');
 
         Gene::template(new Name('a/b'), Stream::of('string'), Stream::of('int'));
+    }
+
+    public function testThrowWhenInvalidStreamOfSuppressions()
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('Argument 5 must be of type StreamInterface<string>');
+
+        Gene::template(
+            new Name('a/b'),
+            Stream::of('string'),
+            Stream::of('string'),
+            Stream::of('int')
+        );
     }
 }
