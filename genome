@@ -19,34 +19,23 @@ foreach ($paths as $file) {
     }
 }
 
+use function Innmind\Genome\bootstrap;
 use Innmind\CLI\{
     Main,
     Environment,
 };
 use Innmind\Url\Path;
-use Innmind\Compose\ContainerBuilder\ContainerBuilder;
-use Innmind\Immutable\Map;
+use Innmind\Filesystem\Adapter\FilesystemAdapter;
 
 new class extends Main {
     protected function main(Environment $env): void
     {
-        $config = new Path(__DIR__.'/genome.yml');
-
-        if ($env->variables()->contains('GENOME')) {
-            $config = new Path($env->variables()->get('GENOME'));
-        }
-
-        $container = (new ContainerBuilder)(
-            new Path(__DIR__.'/container.yml'),
-            (new Map('string', 'mixed'))
-                ->put('genomePath', $config)
-                ->put(
-                    'pathToStoreExpressedGenes',
-                    $env->variables()->get('HOME').'/.innmind/genome'
-                )
+        $run = bootstrap(
+            new Path($env->variables()['GENOME'] ?? __DIR__.'/genome.yml'),
+            new FilesystemAdapter(
+                $env->variables()->get('HOME').'/.innmind/genome'
+            )
         );
-
-        $run = $container->get('commands');
         $run($env);
     }
 };
