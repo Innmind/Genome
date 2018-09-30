@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types = 1);
+
+$paths = [
+    'vendor/autoload.php',
+    '../autoload.php',
+    __DIR__ . '/../autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../vendor/autoload.php',
+    getcwd() . '/vendor/autoload.php',
+    getcwd() . '/../vendor/autoload.php',
+];
+
+foreach ($paths as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+use function Innmind\Genome\bootstrap;
+use Innmind\CLI\{
+    Main,
+    Environment,
+};
+use Innmind\Url\Path;
+use Innmind\Filesystem\Adapter\FilesystemAdapter;
+
+new class extends Main {
+    protected function main(Environment $env): void
+    {
+        $run = bootstrap(
+            new Path($env->variables()['GENOME'] ?? __DIR__.'/genome.php'),
+            new FilesystemAdapter(
+                $env->variables()->get('HOME').'/.innmind/genome'
+            )
+        );
+        $run($env);
+    }
+};
