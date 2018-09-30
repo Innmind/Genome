@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 declare(strict_types = 1);
+
 $paths = [
     'vendor/autoload.php',
     '../autoload.php',
@@ -10,6 +11,7 @@ $paths = [
     getcwd() . '/vendor/autoload.php',
     getcwd() . '/../vendor/autoload.php',
 ];
+
 foreach ($paths as $file) {
     if (file_exists($file)) {
         require $file;
