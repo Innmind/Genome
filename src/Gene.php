@@ -41,18 +41,28 @@ final class Gene
 
     public static function template(
         Name $name,
-        StreamInterface $actions,
-        StreamInterface $update
+        StreamInterface $actions = null,
+        StreamInterface $update = null
     ): self {
-        return new self(Type::template(), $name, $actions, $update);
+        return new self(
+            Type::template(),
+            $name,
+            $actions ?? Stream::of('string'),
+            $update ?? Stream::of('string')
+        );
     }
 
     public static function functional(
         Name $name,
-        StreamInterface $actions,
-        StreamInterface $update
+        StreamInterface $actions = null,
+        StreamInterface $update = null
     ): self {
-        return new self(Type::functional(), $name, $actions, $update);
+        return new self(
+            Type::functional(),
+            $name,
+            $actions ?? Stream::of('string'),
+            $update ?? Stream::of('string')
+        );
     }
 
     public function type(): Type
