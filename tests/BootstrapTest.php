@@ -16,7 +16,7 @@ class BootstrapTest extends TestCase
         $this->assertInstanceOf(
             Commands::class,
             bootstrap(
-                new Path(__DIR__.'/../genome.yml'),
+                new Path(__DIR__.'/../genome.php'),
                 $this->createMock(Adapter::class)
             )
         );
