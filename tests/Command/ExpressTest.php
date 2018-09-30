@@ -87,7 +87,7 @@ USAGE;
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'create-project' 'foo/bar' '/somewhere'";
+                return (string) $command === "composer 'create-project' 'foo/bar' '/somewhere' '--no-dev'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
@@ -144,7 +144,7 @@ JSON;
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'create-project' 'foo/bar' '/somewhere'";
+                return (string) $command === "composer 'create-project' 'foo/bar' '/somewhere' '--no-dev'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process

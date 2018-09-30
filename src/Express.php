@@ -59,7 +59,8 @@ final class Express
                 $command = Command::foreground('composer')
                     ->withArgument('create-project')
                     ->withArgument((string) $gene->name())
-                    ->withArgument((string) $path);
+                    ->withArgument((string) $path)
+                    ->withOption('no-dev');
                 break;
 
             case Type::functional():
