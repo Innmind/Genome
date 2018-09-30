@@ -31,7 +31,7 @@ new class extends Main {
     protected function main(Environment $env): void
     {
         $run = bootstrap(
-            new Path($env->variables()['GENOME'] ?? __DIR__.'/genome.yml'),
+            new Path($env->variables()['GENOME'] ?? __DIR__.'/genome.php'),
             new FilesystemAdapter(
                 $env->variables()->get('HOME').'/.innmind/genome'
             )

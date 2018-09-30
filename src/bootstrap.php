@@ -12,7 +12,7 @@ function bootstrap(PathInterface $genome, Adapter $storage):Commands
 {
     $server = ServerFactory::build();
 
-    $genome = Genome::load(new Loader\Yaml, $genome);
+    $genome = Genome::load(new Loader\PHP, $genome);
     $express = new Express($genome, $server);
 
     return new Commands(
