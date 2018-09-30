@@ -36,7 +36,7 @@ final class Mutate
 
         $this->update($gene, $path);
         $gene
-            ->update()
+            ->mutations()
             ->foreach(function(string $action) use ($gene, $path): void {
                 $process = $this
                     ->server

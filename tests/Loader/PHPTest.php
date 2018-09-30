@@ -41,7 +41,7 @@ class PHPTest extends TestCase
         );
         $this->assertSame(
             ['tower listen 1337 --daemon --restart'],
-            $genome->get('innmind/tower')->update()->toPrimitive()
+            $genome->get('innmind/tower')->mutations()->toPrimitive()
         );
     }
 }

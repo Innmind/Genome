@@ -30,9 +30,9 @@ class GeneTest extends TestCase
         $this->assertInstanceOf(StreamInterface::class, $template->actions());
         $this->assertSame('string', (string) $template->actions()->type());
         $this->assertSame(['foo', 'bar'], $template->actions()->toPrimitive());
-        $this->assertInstanceOf(StreamInterface::class, $template->update());
-        $this->assertSame('string', (string) $template->update()->type());
-        $this->assertSame(['baz', 'foobar'], $template->update()->toPrimitive());
+        $this->assertInstanceOf(StreamInterface::class, $template->mutations());
+        $this->assertSame('string', (string) $template->mutations()->type());
+        $this->assertSame(['baz', 'foobar'], $template->mutations()->toPrimitive());
 
         $this->assertSame(
             Type::functional(),
@@ -48,7 +48,7 @@ class GeneTest extends TestCase
         Gene::template(new Name('a/b'), Stream::of('int'), Stream::of('string'));
     }
 
-    public function testThrowWhenInvalidStreamOfUpdate()
+    public function testThrowWhenInvalidStreamOfMutations()
     {
         $this->expectException(\TypeError::class);
         $this->expectExceptionMessage('Argument 4 must be of type StreamInterface<string>');
