@@ -74,7 +74,7 @@ class MutateTest extends TestCase
         $mutate(new Name('foo/bar'), new Path('/working/directory'));
     }
 
-    public function testThrowWhenFailedToDeployFunctionalGene()
+    public function testThrowWhenFailedToMutateFunctionalGene()
     {
         $mutate = new Mutate(
             new Genome(
