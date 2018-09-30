@@ -22,7 +22,6 @@
         "symfony/yaml": "^4.0",
         "innmind/cli": "^1.2",
         "innmind/filesystem": "^3.1",
-        "innmind/compose": "^1.4",
         "innmind/config": "^1.1"
     },
     "autoload": {
@@ -39,9 +38,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0",
-        "giorgiosironi/eris": "^0.9.0",
-        "mnapoli/silly": "^1.7",
-        "innmind/graphviz": "^1.0"
+        "giorgiosironi/eris": "^0.9.0"
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always"
