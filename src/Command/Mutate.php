@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\Genome\Command;
 
-use Innmind\Genome\Mutate as Runner;
+use Innmind\Genome\{
+    Mutate as Runner,
+    Gene\Name,
+};
 use Innmind\CLI\{
     Command,
     Command\Arguments,
@@ -42,7 +45,7 @@ final class Mutate implements Command
 
         foreach ($expressed as $gene) {
             ($this->mutate)(
-                $gene['gene'],
+                new Name($gene['gene']),
                 new Path($gene['path'])
             );
         }

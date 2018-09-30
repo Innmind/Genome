@@ -34,9 +34,9 @@ class MutateTest extends TestCase
         );
 
         $this->expectException(UnknownGene::class);
-        $this->expectExceptionMessage('foo');
+        $this->expectExceptionMessage('foo/bar');
 
-        $mutate('foo', $this->createMock(PathInterface::class));
+        $mutate(new Name('foo/bar'), $this->createMock(PathInterface::class));
     }
 
     public function testThrowWhenFailedToUpdateTemplate()
@@ -71,7 +71,7 @@ class MutateTest extends TestCase
         $this->expectException(GeneMutationFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $mutate('foo/bar', new Path('/working/directory'));
+        $mutate(new Name('foo/bar'), new Path('/working/directory'));
     }
 
     public function testThrowWhenFailedToDeployFunctionalGene()
@@ -106,7 +106,7 @@ class MutateTest extends TestCase
         $this->expectException(GeneMutationFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $mutate('foo/bar', new Path('/working/directory'));
+        $mutate(new Name('foo/bar'), new Path('/working/directory'));
     }
 
     public function testThrowWhenUpdateFails()
@@ -164,7 +164,7 @@ class MutateTest extends TestCase
         $this->expectException(GeneMutationFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $mutate('foo/bar', new Path('/working/directory'));
+        $mutate(new Name('foo/bar'), new Path('/working/directory'));
     }
 
     public function testMutate()
@@ -234,6 +234,6 @@ class MutateTest extends TestCase
             ->expects($this->exactly(3))
             ->method('execute');
 
-        $this->assertNull($mutate('foo/bar', new Path('/working/directory')));
+        $this->assertNull($mutate(new Name('foo/bar'), new Path('/working/directory')));
     }
 }

@@ -34,9 +34,9 @@ class ExpressTest extends TestCase
         );
 
         $this->expectException(UnknownGene::class);
-        $this->expectExceptionMessage('foo');
+        $this->expectExceptionMessage('foo/bar');
 
-        $express('foo', $this->createMock(PathInterface::class));
+        $express(new Name('foo/bar'), $this->createMock(PathInterface::class));
     }
 
     public function testThrowWhenFailedToDeployTemplate()
@@ -70,7 +70,7 @@ class ExpressTest extends TestCase
         $this->expectException(GeneExpressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express('foo/bar', new Path('/working/directory'));
+        $express(new Name('foo/bar'), new Path('/working/directory'));
     }
 
     public function testThrowWhenFailedToDeployFunctionalGene()
@@ -104,7 +104,7 @@ class ExpressTest extends TestCase
         $this->expectException(GeneExpressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express('foo/bar', new Path('/working/directory'));
+        $express(new Name('foo/bar'), new Path('/working/directory'));
     }
 
     public function testThrowWhenActionFails()
@@ -161,7 +161,7 @@ class ExpressTest extends TestCase
         $this->expectException(GeneExpressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express('foo/bar', new Path('/working/directory'));
+        $express(new Name('foo/bar'), new Path('/working/directory'));
     }
 
     public function testExpress()
@@ -231,6 +231,6 @@ class ExpressTest extends TestCase
             ->expects($this->exactly(3))
             ->method('execute');
 
-        $this->assertNull($express('foo/bar', new Path('/working/directory')));
+        $this->assertNull($express(new Name('foo/bar'), new Path('/working/directory')));
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\Genome;
 
 use Innmind\Genome\{
+    Gene\Name,
     Gene\Type,
     Exception\UnknownGene,
     Exception\GeneExpressionFailed,
@@ -25,13 +26,13 @@ final class Express
         $this->server = $server;
     }
 
-    public function __invoke(string $gene, PathInterface $path): void
+    public function __invoke(Name $gene, PathInterface $path): void
     {
-        if (!$this->genome->contains($gene)) {
-            throw new UnknownGene($gene);
+        if (!$this->genome->contains((string) $gene)) {
+            throw new UnknownGene((string) $gene);
         }
 
-        $gene = $this->genome->get($gene);
+        $gene = $this->genome->get((string) $gene);
 
         $this->deploy($gene, $path);
         $gene

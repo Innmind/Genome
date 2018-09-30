@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\Genome\Command;
 
-use Innmind\Genome\Express as Runner;
+use Innmind\Genome\{
+    Express as Runner,
+    Gene\Name,
+};
 use Innmind\CLI\{
     Command,
     Command\Arguments,
@@ -33,14 +36,14 @@ final class Express implements Command
     public function __invoke(Environment $env, Arguments $arguments, Options $options): void
     {
         ($this->express)(
-            $gene = $arguments->get('gene'),
+            $gene = new Name($arguments->get('gene')),
             $path = new Path($arguments->get('path'))
         );
 
         $this->persist($gene, $path);
     }
 
-    private function persist(string $gene, Path $path): void
+    private function persist(Name $gene, Path $path): void
     {
         $expressed = [];
 
@@ -53,7 +56,7 @@ final class Express implements Command
         }
 
         $expressed[] = [
-            'gene' => $gene,
+            'gene' => (string) $gene,
             'path' => (string) $path,
         ];
 
