@@ -1,11 +1,46 @@
 genome:
+    innmind/installation-monitor:
+        type: functional
+        actions:
+            - 'installation-monitor oversee --daemon'
+
+    innmind/infrastructure-neo4j:
+        type: functional
+        actions:
+            - 'infrastructure-neo4j install'
+            - 'infrastructure-neo4j setup-user'
+
+    innmind/infrastructure-nginx:
+        type: functional
+        actions:
+            - 'infrastructure-nginx install'
+            - 'infrastructure-nginx setup-site'
+
+    innmind/infrastructure-amqp:
+        type: functional
+        actions:
+            - 'infrastructure-amqp install'
+            - 'infrastructure-amqp setup-users'
+
     innmind/library:
         type: template
+        actions:
+            - 'bin/library install'
 
     innmind/crawler-app:
         type: template
+        actions:
+            - 'bin/crawler install'
 
     innmind/tower:
         type: functional
         actions:
-            - 'tower listen 1337 -d'
+            - 'tower listen 1337 --daemon'
+        update:
+            - 'tower listen 1337 --daemon --restart'
+
+    innmind/warden:
+        type: functional
+        actions:
+            - 'warden deploy'
+            - 'warden grant Baptouuuu'
