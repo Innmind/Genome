@@ -55,7 +55,7 @@ class ExpressTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'create-project' 'foo/bar' '/working/directory' '--no-dev'";
+                return (string) $command === "composer 'create-project' 'foo/bar' '/working/directory' '--no-dev' '--prefer-source' '--keep-vcs'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
