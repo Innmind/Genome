@@ -61,7 +61,9 @@ final class Express
                     ->withArgument('create-project')
                     ->withArgument((string) $gene->name())
                     ->withArgument((string) $path)
-                    ->withOption('no-dev');
+                    ->withOption('no-dev')
+                    ->withOption('prefer-source')
+                    ->withOption('keep-vcs');
                 break;
 
             case Type::functional():
