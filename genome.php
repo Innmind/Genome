@@ -10,7 +10,9 @@ return function(): Genome {
     return new Genome(
         Gene::functional(
             new Gene\Name('innmind/installation-monitor'),
-            Stream::of('string', 'installation-monitor oversee --daemon')
+            Stream::of('string', 'installation-monitor oversee --daemon'),
+            Stream::of('string'),
+            Stream::of('string', 'installation-monitor kill')
         ),
         Gene::functional(
             new Gene\Name('innmind/infrastructure-neo4j'),
