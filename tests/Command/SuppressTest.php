@@ -36,7 +36,7 @@ class SuppressTest extends TestCase
     private $server;
     private $filesystem;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->command = new Suppress(
             new Runner(
