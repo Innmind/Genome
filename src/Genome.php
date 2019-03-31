@@ -16,6 +16,7 @@ use Innmind\Immutable\{
 final class Genome
 {
     private $genes;
+    private $generate;
 
     public function __construct(Gene ...$genes)
     {
@@ -35,14 +36,22 @@ final class Genome
         return $load($path);
     }
 
+    public static function defer(\Generator $generate): self
+    {
+        $self = new self;
+        $self->generate = $generate;
+
+        return $self;
+    }
+
     public function get(string $name): Gene
     {
-        return $this->genes->get($name);
+        return $this->all()->get($name);
     }
 
     public function contains(string $name): bool
     {
-        return $this->genes->contains($name);
+        return $this->all()->contains($name);
     }
 
     /**
@@ -50,11 +59,27 @@ final class Genome
      */
     public function genes(): SetInterface
     {
-        return $this->genes->values()->reduce(
+        return $this->all()->values()->reduce(
             Set::of(Name::class),
             static function(SetInterface $names, Gene $gene): SetInterface {
                 return $names->add($gene->name());
             }
         );
+    }
+
+    private function all(): MapInterface
+    {
+        if (!$this->generate instanceof \Generator || !$this->generate->valid()) {
+            return $this->genes;
+        }
+
+        foreach ($this->generate as $gene) {
+            $this->genes = $this->genes->put(
+                (string) $gene->name(),
+                $gene
+            );
+        }
+
+        return $this->genes;
     }
 }
