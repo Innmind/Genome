@@ -7,6 +7,8 @@ use function Innmind\Genome\bootstrap;
 use Innmind\CLI\Commands;
 use Innmind\Url\Path;
 use Innmind\Filesystem\Adapter;
+use Innmind\Server\Control\Server;
+use Innmind\HttpTransport\Transport;
 use PHPUnit\Framework\TestCase;
 
 class BootstrapTest extends TestCase
@@ -17,7 +19,9 @@ class BootstrapTest extends TestCase
             Commands::class,
             bootstrap(
                 new Path(__DIR__.'/../genome.php'),
-                $this->createMock(Adapter::class)
+                $this->createMock(Adapter::class),
+                $this->createMock(Server::class),
+                $this->createMock(Transport::class)
             )
         );
     }

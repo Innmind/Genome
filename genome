@@ -32,10 +32,12 @@ new class extends Main {
     protected function main(Environment $env, OperatingSystem $os): void
     {
         $run = bootstrap(
-            new Path($env->variables()['GENOME'] ?? __DIR__.'/genome.php'),
+            new Path($env->variables()['GENOME'] ?? 'innmind'),
             $os->filesystem()->mount(
                 new Path($env->variables()->get('HOME').'/.innmind/genome')
-            )
+            ),
+            $os->control(),
+            $os->remote()->http()
         );
         $run($env);
     }
