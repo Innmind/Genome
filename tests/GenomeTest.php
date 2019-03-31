@@ -52,4 +52,30 @@ class GenomeTest extends TestCase
 
         $this->assertSame($expected, $genome);
     }
+
+    public function testDefer()
+    {
+        $loaded = false;
+        $genome = Genome::defer((function() use (&$loaded) {
+            yield Gene::functional(
+                new Gene\Name('innmind/installation-monitor')
+            );
+
+            try {
+                yield Gene::functional(
+                    new Gene\Name('innmind/foobar')
+                );
+            } finally {
+                $loaded = true;
+            }
+        })());
+
+        $this->assertInstanceOf(Genome::class, $genome);
+        $this->assertFalse($loaded);
+        $this->assertTrue($genome->contains('innmind/installation-monitor'));
+        $this->assertTrue($loaded);
+        $this->assertTrue($genome->contains('innmind/foobar'));
+        $this->assertInstanceOf(Gene::class, $genome->get('innmind/installation-monitor'));
+        $this->assertInstanceOf(Gene::class, $genome->get('innmind/foobar'));
+    }
 }

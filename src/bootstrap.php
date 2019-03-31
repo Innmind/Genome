@@ -6,13 +6,17 @@ namespace Innmind\Genome;
 use Innmind\Url\PathInterface;
 use Innmind\CLI\Commands;
 use Innmind\Filesystem\Adapter;
-use Innmind\Server\Control\ServerFactory;
+use Innmind\Server\Control\Server;
+use Innmind\HttpTransport\Transport;
 
-function bootstrap(PathInterface $genome, Adapter $storage):Commands
-{
-    $server = ServerFactory::build();
-
-    $genome = Genome::load(new Loader\PHP, $genome);
+function bootstrap(
+    PathInterface $genome,
+    Adapter $storage,
+    Server $server,
+    Transport $http
+):Commands {
+    $load = new Loader\Packagist($http);
+    $genome = $load($genome);
     $express = new Express($genome, $server);
 
     return new Commands(

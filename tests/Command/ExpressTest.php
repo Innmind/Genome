@@ -39,7 +39,7 @@ class ExpressTest extends TestCase
     private $server;
     private $filesystem;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->command = new Express(
             new Runner(

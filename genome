@@ -3,14 +3,8 @@
 declare(strict_types = 1);
 
 $paths = [
-    'vendor/autoload.php',
-    '../autoload.php',
-    __DIR__ . '/../autoload.php',
-    __DIR__ . '/../../autoload.php',
-    __DIR__ . '/../vendor/autoload.php',
-    __DIR__ . '/../../vendor/autoload.php',
-    getcwd() . '/vendor/autoload.php',
-    getcwd() . '/../vendor/autoload.php',
+    __DIR__.'/vendor/autoload.php',
+    __DIR__ . '/../../../vendor/autoload.php',
 ];
 
 foreach ($paths as $file) {
@@ -26,16 +20,18 @@ use Innmind\CLI\{
     Environment,
 };
 use Innmind\Url\Path;
-use Innmind\Filesystem\Adapter\FilesystemAdapter;
+use Innmind\OperatingSystem\OperatingSystem;
 
 new class extends Main {
-    protected function main(Environment $env): void
+    protected function main(Environment $env, OperatingSystem $os): void
     {
         $run = bootstrap(
-            new Path($env->variables()['GENOME'] ?? __DIR__.'/genome.php'),
-            new FilesystemAdapter(
-                $env->variables()->get('HOME').'/.innmind/genome'
-            )
+            new Path($env->variables()['GENOME'] ?? 'innmind'),
+            $os->filesystem()->mount(
+                new Path($env->variables()->get('HOME').'/.innmind/genome')
+            ),
+            $os->control(),
+            $os->remote()->http()
         );
         $run($env);
     }
