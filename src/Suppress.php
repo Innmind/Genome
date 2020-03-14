@@ -28,11 +28,11 @@ final class Suppress
 
     public function __invoke(Name $gene, Path $path): void
     {
-        if (!$this->genome->contains((string) $gene)) {
-            throw new UnknownGene((string) $gene);
+        if (!$this->genome->contains($gene->toString())) {
+            throw new UnknownGene($gene->toString());
         }
 
-        $gene = $this->genome->get((string) $gene);
+        $gene = $this->genome->get($gene->toString());
 
         $gene
             ->suppressions()
@@ -47,7 +47,7 @@ final class Suppress
                 $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
-                    throw new GeneSuppressionFailed((string) $gene->name());
+                    throw new GeneSuppressionFailed($gene->name()->toString());
                 }
             });
         $this->delete($gene, $path);
@@ -67,7 +67,7 @@ final class Suppress
                 $command = Command::foreground('composer')
                     ->withArgument('global')
                     ->withArgument('remove')
-                    ->withArgument((string) $gene->name())
+                    ->withArgument($gene->name()->toString())
                     ->withWorkingDirectory($path);
         }
 
@@ -78,7 +78,7 @@ final class Suppress
         $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
-            throw new GeneSuppressionFailed((string) $gene->name());
+            throw new GeneSuppressionFailed($gene->name()->toString());
         }
     }
 }

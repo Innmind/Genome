@@ -25,7 +25,7 @@ final class Type
         return self::$functional ??= new self('functional');
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

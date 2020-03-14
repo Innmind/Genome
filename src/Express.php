@@ -28,11 +28,11 @@ final class Express
 
     public function __invoke(Name $gene, Path $path): void
     {
-        if (!$this->genome->contains((string) $gene)) {
-            throw new UnknownGene((string) $gene);
+        if (!$this->genome->contains($gene->toString())) {
+            throw new UnknownGene($gene->toString());
         }
 
-        $gene = $this->genome->get((string) $gene);
+        $gene = $this->genome->get($gene->toString());
 
         $this->deploy($gene, $path);
         $gene
@@ -48,7 +48,7 @@ final class Express
                 $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
-                    throw new GeneExpressionFailed((string) $gene->name());
+                    throw new GeneExpressionFailed($gene->name()->toString());
                 }
             });
     }
@@ -59,7 +59,7 @@ final class Express
             case Type::template():
                 $command = Command::foreground('composer')
                     ->withArgument('create-project')
-                    ->withArgument((string) $gene->name())
+                    ->withArgument($gene->name()->toString())
                     ->withArgument($path->toString())
                     ->withOption('no-dev')
                     ->withOption('prefer-source')
@@ -71,7 +71,7 @@ final class Express
                 $command = Command::foreground('composer')
                     ->withArgument('global')
                     ->withArgument('require')
-                    ->withArgument((string) $gene->name());
+                    ->withArgument($gene->name()->toString());
         }
 
         $process = $this
@@ -81,7 +81,7 @@ final class Express
         $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
-            throw new GeneExpressionFailed((string) $gene->name());
+            throw new GeneExpressionFailed($gene->name()->toString());
         }
     }
 }

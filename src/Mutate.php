@@ -28,11 +28,11 @@ final class Mutate
 
     public function __invoke(Name $gene, Path $path): void
     {
-        if (!$this->genome->contains((string) $gene)) {
-            throw new UnknownGene((string) $gene);
+        if (!$this->genome->contains($gene->toString())) {
+            throw new UnknownGene($gene->toString());
         }
 
-        $gene = $this->genome->get((string) $gene);
+        $gene = $this->genome->get($gene->toString());
 
         $this->update($gene, $path);
         $gene
@@ -48,7 +48,7 @@ final class Mutate
                 $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
-                    throw new GeneMutationFailed((string) $gene->name());
+                    throw new GeneMutationFailed($gene->name()->toString());
                 }
             });
     }
@@ -67,7 +67,7 @@ final class Mutate
                 $command = Command::foreground('composer')
                     ->withArgument('global')
                     ->withArgument('update')
-                    ->withArgument((string) $gene->name())
+                    ->withArgument($gene->name()->toString())
                     ->withWorkingDirectory($path);
         }
 
@@ -78,7 +78,7 @@ final class Mutate
         $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
-            throw new GeneMutationFailed((string) $gene->name());
+            throw new GeneMutationFailed($gene->name()->toString());
         }
     }
 }

@@ -60,7 +60,7 @@ final class Express implements Command
         }
 
         $expressed[] = [
-            'gene' => (string) $gene,
+            'gene' => $gene->toString(),
             'path' => $path->toString(),
         ];
 

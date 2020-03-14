@@ -27,7 +27,7 @@ final class Genes implements Command
     public function __invoke(Environment $env, Arguments $arguments, Options $options): void
     {
         $this->genome->genes()->foreach(static function(Name $gene) use ($env): void {
-            $env->output()->write(Str::of((string) $gene)->append("\n"));
+            $env->output()->write(Str::of($gene->toString())->append("\n"));
         });
     }
 

@@ -25,7 +25,7 @@ final class Genome
             Map::of('string', Gene::class),
             static function(Map $genes, Gene $gene): Map {
                 return $genes->put(
-                    (string) $gene->name(),
+                    $gene->name()->toString(),
                     $gene
                 );
             }
@@ -81,7 +81,7 @@ final class Genome
 
         foreach ($this->generate as $gene) {
             $this->genes = $this->genes->put(
-                (string) $gene->name(),
+                $gene->name()->toString(),
                 $gene
             );
         }
