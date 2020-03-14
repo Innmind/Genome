@@ -28,11 +28,11 @@ final class Suppress
 
     public function __invoke(Name $gene, Path $path): void
     {
-        if (!$this->genome->contains($gene->toString())) {
+        if (!$this->genome->contains($gene)) {
             throw new UnknownGene($gene->toString());
         }
 
-        $gene = $this->genome->get($gene->toString());
+        $gene = $this->genome->get($gene);
 
         $gene
             ->suppressions()

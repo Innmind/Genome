@@ -26,11 +26,11 @@ class GenomeTest extends TestCase
             $second = Gene::template(new Name('foo/baz'), Sequence::of('string'), Sequence::of('string'))
         );
 
-        $this->assertTrue($genome->contains('foo/bar'));
-        $this->assertTrue($genome->contains('foo/baz'));
-        $this->assertFalse($genome->contains('foobar'));
-        $this->assertSame($first, $genome->get('foo/bar'));
-        $this->assertSame($second, $genome->get('foo/baz'));
+        $this->assertTrue($genome->contains(new Name('foo/bar')));
+        $this->assertTrue($genome->contains(new Name('foo/baz')));
+        $this->assertFalse($genome->contains(new Name('bar/foo')));
+        $this->assertSame($first, $genome->get(new Name('foo/bar')));
+        $this->assertSame($second, $genome->get(new Name('foo/baz')));
         $this->assertInstanceOf(Set::class, $genome->genes());
         $this->assertSame(Name::class, (string) $genome->genes()->type());
         $this->assertSame(
@@ -73,10 +73,10 @@ class GenomeTest extends TestCase
 
         $this->assertInstanceOf(Genome::class, $genome);
         $this->assertFalse($loaded);
-        $this->assertTrue($genome->contains('innmind/installation-monitor'));
+        $this->assertTrue($genome->contains(new Name('innmind/installation-monitor')));
         $this->assertTrue($loaded);
-        $this->assertTrue($genome->contains('innmind/foobar'));
-        $this->assertInstanceOf(Gene::class, $genome->get('innmind/installation-monitor'));
-        $this->assertInstanceOf(Gene::class, $genome->get('innmind/foobar'));
+        $this->assertTrue($genome->contains(new Name('innmind/foobar')));
+        $this->assertInstanceOf(Gene::class, $genome->get(new Name('innmind/installation-monitor')));
+        $this->assertInstanceOf(Gene::class, $genome->get(new Name('innmind/foobar')));
     }
 }

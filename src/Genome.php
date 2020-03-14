@@ -48,14 +48,14 @@ final class Genome
         return $self;
     }
 
-    public function get(string $name): Gene
+    public function get(Name $name): Gene
     {
-        return $this->all()->get($name);
+        return $this->all()->get($name->toString());
     }
 
-    public function contains(string $name): bool
+    public function contains(Name $name): bool
     {
-        return $this->all()->contains($name);
+        return $this->all()->contains($name->toString());
     }
 
     /**
