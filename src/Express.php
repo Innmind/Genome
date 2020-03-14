@@ -9,7 +9,7 @@ use Innmind\Genome\{
     Exception\UnknownGene,
     Exception\GeneExpressionFailed,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Server\Control\{
     Server,
     Server\Command,
@@ -26,7 +26,7 @@ final class Express
         $this->server = $server;
     }
 
-    public function __invoke(Name $gene, PathInterface $path): void
+    public function __invoke(Name $gene, Path $path): void
     {
         if (!$this->genome->contains((string) $gene)) {
             throw new UnknownGene((string) $gene);
@@ -43,9 +43,9 @@ final class Express
                     ->processes()
                     ->execute(
                         Command::foreground($action)
-                            ->withWorkingDirectory((string) $path)
-                    )
-                    ->wait();
+                            ->withWorkingDirectory($path)
+                    );
+                $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
                     throw new GeneExpressionFailed((string) $gene->name());
@@ -53,14 +53,14 @@ final class Express
             });
     }
 
-    private function deploy(Gene $gene, PathInterface $path): void
+    private function deploy(Gene $gene, Path $path): void
     {
         switch ($gene->type()) {
             case Type::template():
                 $command = Command::foreground('composer')
                     ->withArgument('create-project')
                     ->withArgument((string) $gene->name())
-                    ->withArgument((string) $path)
+                    ->withArgument($path->toString())
                     ->withOption('no-dev')
                     ->withOption('prefer-source')
                     ->withOption('keep-vcs');
@@ -77,8 +77,8 @@ final class Express
         $process = $this
             ->server
             ->processes()
-            ->execute($command)
-            ->wait();
+            ->execute($command);
+        $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
             throw new GeneExpressionFailed((string) $gene->name());

@@ -4,12 +4,10 @@ declare(strict_types = 1);
 namespace Innmind\Genome;
 
 use Innmind\Genome\Gene\Name;
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Immutable\{
     Sequence,
-    MapInterface,
     Map,
-    SetInterface,
     Set,
 };
 
@@ -20,9 +18,9 @@ final class Genome
 
     public function __construct(Gene ...$genes)
     {
-        $this->genes = Sequence::of(...$genes)->reduce(
-            new Map('string', Gene::class),
-            static function(MapInterface $genes, Gene $gene): MapInterface {
+        $this->genes = Sequence::of(Gene::class, ...$genes)->reduce(
+            Map::of('string', Gene::class),
+            static function(Map $genes, Gene $gene): Map {
                 return $genes->put(
                     (string) $gene->name(),
                     $gene
@@ -31,7 +29,7 @@ final class Genome
         );
     }
 
-    public static function load(Loader $load, PathInterface $path): self
+    public static function load(Loader $load, Path $path): self
     {
         return $load($path);
     }
@@ -55,19 +53,19 @@ final class Genome
     }
 
     /**
-     * @return SetInterface<Name>
+     * @return Set<Name>
      */
-    public function genes(): SetInterface
+    public function genes(): Set
     {
         return $this->all()->values()->reduce(
             Set::of(Name::class),
-            static function(SetInterface $names, Gene $gene): SetInterface {
+            static function(Set $names, Gene $gene): Set {
                 return $names->add($gene->name());
             }
         );
     }
 
-    private function all(): MapInterface
+    private function all(): Map
     {
         if (!$this->generate instanceof \Generator || !$this->generate->valid()) {
             return $this->genes;

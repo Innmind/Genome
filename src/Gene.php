@@ -7,37 +7,27 @@ use Innmind\Genome\Gene\{
     Type,
     Name,
 };
-use Innmind\Immutable\{
-    StreamInterface,
-    Stream,
-};
+use Innmind\Immutable\Sequence;
+use function Innmind\Immutable\assertSequence;
 
 final class Gene
 {
     private Type $type;
     private Name $name;
-    private StreamInterface $actions;
-    private StreamInterface $mutations;
-    private StreamInterface $suppressions;
+    private Sequence $actions;
+    private Sequence $mutations;
+    private Sequence $suppressions;
 
     private function __construct(
         Type $type,
         Name $name,
-        StreamInterface $actions,
-        StreamInterface $mutations,
-        StreamInterface $suppressions
+        Sequence $actions,
+        Sequence $mutations,
+        Sequence $suppressions
     ) {
-        if ((string) $actions->type() !== 'string') {
-            throw new \TypeError('Argument 3 must be of type StreamInterface<string>');
-        }
-
-        if ((string) $mutations->type() !== 'string') {
-            throw new \TypeError('Argument 4 must be of type StreamInterface<string>');
-        }
-
-        if ((string) $suppressions->type() !== 'string') {
-            throw new \TypeError('Argument 5 must be of type StreamInterface<string>');
-        }
+        assertSequence('string', $actions, 3);
+        assertSequence('string', $mutations, 4);
+        assertSequence('string', $suppressions, 5);
 
         $this->type = $type;
         $this->name = $name;
@@ -48,31 +38,31 @@ final class Gene
 
     public static function template(
         Name $name,
-        StreamInterface $actions = null,
-        StreamInterface $mutations = null,
-        StreamInterface $suppressions = null
+        Sequence $actions = null,
+        Sequence $mutations = null,
+        Sequence $suppressions = null
     ): self {
         return new self(
             Type::template(),
             $name,
-            $actions ?? Stream::of('string'),
-            $mutations ?? Stream::of('string'),
-            $suppressions ?? Stream::of('string')
+            $actions ?? Sequence::strings(),
+            $mutations ?? Sequence::strings(),
+            $suppressions ?? Sequence::strings()
         );
     }
 
     public static function functional(
         Name $name,
-        StreamInterface $actions = null,
-        StreamInterface $mutations = null,
-        StreamInterface $suppressions = null
+        Sequence $actions = null,
+        Sequence $mutations = null,
+        Sequence $suppressions = null
     ): self {
         return new self(
             Type::functional(),
             $name,
-            $actions ?? Stream::of('string'),
-            $mutations ?? Stream::of('string'),
-            $suppressions ?? Stream::of('string')
+            $actions ?? Sequence::strings(),
+            $mutations ?? Sequence::strings(),
+            $suppressions ?? Sequence::strings()
         );
     }
 
@@ -87,25 +77,25 @@ final class Gene
     }
 
     /**
-     * @return StreamInterface<string>
+     * @return Sequence<string>
      */
-    public function actions(): StreamInterface
+    public function actions(): Sequence
     {
         return $this->actions;
     }
 
     /**
-     * @return StreamInterface<string>
+     * @return Sequence<string>
      */
-    public function mutations(): StreamInterface
+    public function mutations(): Sequence
     {
         return $this->mutations;
     }
 
     /**
-     * @return StreamInterface<string>
+     * @return Sequence<string>
      */
-    public function suppressions(): StreamInterface
+    public function suppressions(): Sequence
     {
         return $this->suppressions;
     }

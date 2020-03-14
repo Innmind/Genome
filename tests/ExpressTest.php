@@ -17,11 +17,8 @@ use Innmind\Server\Control\{
     Server\Process,
     Server\Process\ExitCode,
 };
-use Innmind\Url\{
-    PathInterface,
-    Path,
-};
-use Innmind\Immutable\Stream;
+use Innmind\Url\Path;
+use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class ExpressTest extends TestCase
@@ -36,14 +33,14 @@ class ExpressTest extends TestCase
         $this->expectException(UnknownGene::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express(new Name('foo/bar'), $this->createMock(PathInterface::class));
+        $express(new Name('foo/bar'), Path::none());
     }
 
     public function testThrowWhenFailedToDeployTemplate()
     {
         $express = new Express(
             new Genome(
-                Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string'))
+                Gene::template(new Name('foo/bar'), Sequence::of('string'), Sequence::of('string'))
             ),
             $server = $this->createMock(Server::class)
         );
@@ -55,13 +52,12 @@ class ExpressTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'create-project' 'foo/bar' '/working/directory' '--no-dev' '--prefer-source' '--keep-vcs'";
+                return $command->toString() === "composer 'create-project' 'foo/bar' '/working/directory' '--no-dev' '--prefer-source' '--keep-vcs'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -70,14 +66,14 @@ class ExpressTest extends TestCase
         $this->expectException(GeneExpressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express(new Name('foo/bar'), new Path('/working/directory'));
+        $express(new Name('foo/bar'), Path::of('/working/directory'));
     }
 
     public function testThrowWhenFailedToDeployFunctionalGene()
     {
         $express = new Express(
             new Genome(
-                Gene::functional(new Name('foo/bar'), Stream::of('string'), Stream::of('string'))
+                Gene::functional(new Name('foo/bar'), Sequence::of('string'), Sequence::of('string'))
             ),
             $server = $this->createMock(Server::class)
         );
@@ -89,13 +85,12 @@ class ExpressTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'require' 'foo/bar'";
+                return $command->toString() === "composer 'global' 'require' 'foo/bar'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -104,7 +99,7 @@ class ExpressTest extends TestCase
         $this->expectException(GeneExpressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express(new Name('foo/bar'), new Path('/working/directory'));
+        $express(new Name('foo/bar'), Path::of('/working/directory'));
     }
 
     public function testThrowWhenActionFails()
@@ -113,8 +108,8 @@ class ExpressTest extends TestCase
             new Genome(
                 Gene::functional(
                     new Name('foo/bar'),
-                    Stream::of('string', 'action1', 'action2'),
-                    Stream::of('string')
+                    Sequence::of('string', 'action1', 'action2'),
+                    Sequence::of('string')
                 )
             ),
             $server = $this->createMock(Server::class)
@@ -127,13 +122,12 @@ class ExpressTest extends TestCase
             ->expects($this->at(0))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'require' 'foo/bar'";
+                return $command->toString() === "composer 'global' 'require' 'foo/bar'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -142,14 +136,13 @@ class ExpressTest extends TestCase
             ->expects($this->at(1))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === 'action1' &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === 'action1' &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -161,7 +154,7 @@ class ExpressTest extends TestCase
         $this->expectException(GeneExpressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $express(new Name('foo/bar'), new Path('/working/directory'));
+        $express(new Name('foo/bar'), Path::of('/working/directory'));
     }
 
     public function testExpress()
@@ -170,8 +163,8 @@ class ExpressTest extends TestCase
             new Genome(
                 Gene::functional(
                     new Name('foo/bar'),
-                    Stream::of('string', 'action1', 'action2'),
-                    Stream::of('string')
+                    Sequence::of('string', 'action1', 'action2'),
+                    Sequence::of('string')
                 )
             ),
             $server = $this->createMock(Server::class)
@@ -184,13 +177,12 @@ class ExpressTest extends TestCase
             ->expects($this->at(0))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'require' 'foo/bar'";
+                return $command->toString() === "composer 'global' 'require' 'foo/bar'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -199,14 +191,13 @@ class ExpressTest extends TestCase
             ->expects($this->at(1))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === 'action1' &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === 'action1' &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -215,14 +206,13 @@ class ExpressTest extends TestCase
             ->expects($this->at(2))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === 'action2' &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === 'action2' &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -231,6 +221,6 @@ class ExpressTest extends TestCase
             ->expects($this->exactly(3))
             ->method('execute');
 
-        $this->assertNull($express(new Name('foo/bar'), new Path('/working/directory')));
+        $this->assertNull($express(new Name('foo/bar'), Path::of('/working/directory')));
     }
 }

@@ -9,11 +9,12 @@ use Innmind\Genome\{
     Gene\Name,
     Loader,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Immutable\{
-    SetInterface,
-    Stream,
+    Set,
+    Sequence,
 };
+use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class GenomeTest extends TestCase
@@ -21,8 +22,8 @@ class GenomeTest extends TestCase
     public function testInterface()
     {
         $genome = new Genome(
-            $first = Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string')),
-            $second = Gene::template(new Name('foo/baz'), Stream::of('string'), Stream::of('string'))
+            $first = Gene::template(new Name('foo/bar'), Sequence::of('string'), Sequence::of('string')),
+            $second = Gene::template(new Name('foo/baz'), Sequence::of('string'), Sequence::of('string'))
         );
 
         $this->assertTrue($genome->contains('foo/bar'));
@@ -30,17 +31,17 @@ class GenomeTest extends TestCase
         $this->assertFalse($genome->contains('foobar'));
         $this->assertSame($first, $genome->get('foo/bar'));
         $this->assertSame($second, $genome->get('foo/baz'));
-        $this->assertInstanceOf(SetInterface::class, $genome->genes());
+        $this->assertInstanceOf(Set::class, $genome->genes());
         $this->assertSame(Name::class, (string) $genome->genes()->type());
         $this->assertSame(
             [$first->name(), $second->name()],
-            $genome->genes()->toPrimitive()
+            unwrap($genome->genes()),
         );
     }
 
     public function testLoad()
     {
-        $path = $this->createMock(PathInterface::class);
+        $path = Path::none();
         $load = $this->createMock(Loader::class);
         $load
             ->expects($this->once())

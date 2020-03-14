@@ -7,13 +7,13 @@ use Innmind\Genome\{
     Loader,
     Genome,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 
 final class PHP implements Loader
 {
-    public function __invoke(PathInterface $path): Genome
+    public function __invoke(Path $path): Genome
     {
-        $load = require (string) $path;
+        $load = require $path->toString();
 
         return $load();
     }

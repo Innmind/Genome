@@ -9,7 +9,7 @@ use Innmind\Genome\{
     Exception\UnknownGene,
     Exception\GeneSuppressionFailed,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Server\Control\{
     Server,
     Server\Command,
@@ -26,7 +26,7 @@ final class Suppress
         $this->server = $server;
     }
 
-    public function __invoke(Name $gene, PathInterface $path): void
+    public function __invoke(Name $gene, Path $path): void
     {
         if (!$this->genome->contains((string) $gene)) {
             throw new UnknownGene((string) $gene);
@@ -42,9 +42,9 @@ final class Suppress
                     ->processes()
                     ->execute(
                         Command::foreground($action)
-                            ->withWorkingDirectory((string) $path)
-                    )
-                    ->wait();
+                            ->withWorkingDirectory($path)
+                    );
+                $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
                     throw new GeneSuppressionFailed((string) $gene->name());
@@ -53,13 +53,13 @@ final class Suppress
         $this->delete($gene, $path);
     }
 
-    private function delete(Gene $gene, PathInterface $path): void
+    private function delete(Gene $gene, Path $path): void
     {
         switch ($gene->type()) {
             case Type::template():
                 $command = Command::foreground('rm')
                     ->withShortOption('r')
-                    ->withArgument((string) $path);
+                    ->withArgument($path->toString());
                 break;
 
             case Type::functional():
@@ -68,14 +68,14 @@ final class Suppress
                     ->withArgument('global')
                     ->withArgument('remove')
                     ->withArgument((string) $gene->name())
-                    ->withWorkingDirectory((string) $path);
+                    ->withWorkingDirectory($path);
         }
 
         $process = $this
             ->server
             ->processes()
-            ->execute($command)
-            ->wait();
+            ->execute($command);
+        $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
             throw new GeneSuppressionFailed((string) $gene->name());

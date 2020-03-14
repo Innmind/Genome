@@ -25,8 +25,9 @@ use Innmind\CLI\{
 use Innmind\Filesystem\{
     Adapter,
     File\File,
-    Stream\StringStream,
+    Name as FileName,
 };
+use Innmind\Stream\Readable\Stream;
 use Innmind\Immutable\Map;
 use PHPUnit\Framework\TestCase;
 
@@ -62,7 +63,7 @@ suppress gene path
 Will delete the expressed gene
 USAGE;
 
-        $this->assertSame($expected, (string) $this->command);
+        $this->assertSame($expected, $this->command->toString());
     }
 
     public function testDoesNothingWhenNoFile()
@@ -70,8 +71,8 @@ USAGE;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(false);
         $this
             ->server
@@ -90,17 +91,17 @@ USAGE;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(true);
         $this
             ->filesystem
             ->expects($this->once())
             ->method('get')
-            ->with('expressed-genes.json')
-            ->willReturn(new File(
+            ->with(new FileName('expressed-genes.json'))
+            ->willReturn(File::named(
                 'expressed-genes.json',
-                new StringStream('[{"gene":"foo/bar","path":"/somewhere"}]')
+                Stream::ofContent('[{"gene":"foo/bar","path":"/somewhere"}]')
             ));
         $this
             ->server
@@ -110,9 +111,9 @@ USAGE;
         $this->assertNull(($this->command)(
             $this->createMock(Environment::class),
             new Arguments(
-                (new Map('string', 'mixed'))
-                    ->put('gene', 'foo/bar')
-                    ->put('path', '/somewhere-else')
+                Map::of('string', 'string')
+                    ('gene', 'foo/bar')
+                    ('path', '/somewhere-else')
             ),
             new Options
         ));
@@ -123,17 +124,17 @@ USAGE;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(true);
         $this
             ->filesystem
             ->expects($this->once())
             ->method('get')
-            ->with('expressed-genes.json')
-            ->willReturn(new File(
+            ->with(new FileName('expressed-genes.json'))
+            ->willReturn(File::named(
                 'expressed-genes.json',
-                new StringStream('[{"gene":"foo/bar","path":"/somewhere"}]')
+                Stream::ofContent('[{"gene":"foo/bar","path":"/somewhere"}]')
             ));
         $this
             ->server
@@ -144,13 +145,12 @@ USAGE;
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'remove' 'foo/bar'";
+                return $command->toString() === "composer 'global' 'remove' 'foo/bar'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -159,9 +159,9 @@ USAGE;
         $this->assertNull(($this->command)(
             $this->createMock(Environment::class),
             new Arguments(
-                (new Map('string', 'mixed'))
-                    ->put('gene', 'foo/bar')
-                    ->put('path', '/somewhere')
+                Map::of('string', 'string')
+                    ('gene', 'foo/bar')
+                    ('path', '/somewhere')
             ),
             new Options
         ));

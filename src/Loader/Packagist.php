@@ -11,20 +11,21 @@ use Innmind\Genome\{
 };
 use Innmind\Url\{
     Url,
-    PathInterface,
+    Path,
 };
 use Innmind\HttpTransport\Transport;
 use Innmind\Http\{
     Message\Request\Request,
-    Message\Method\Method,
-    ProtocolVersion\ProtocolVersion,
+    Message\Method,
+    ProtocolVersion,
 };
 use Innmind\Json\Json;
 use Innmind\Immutable\{
     Map,
     Str,
-    Stream,
+    Sequence,
 };
+use function Innmind\Immutable\unwrap;
 use Composer\Semver\{
     VersionParser,
     Semver,
@@ -39,25 +40,25 @@ final class Packagist implements Loader
         $this->fulfill = $fulfill;
     }
 
-    public function __invoke(PathInterface $path): Genome
+    public function __invoke(Path $path): Genome
     {
         return Genome::defer($this->load($path));
     }
 
-    private function load(PathInterface $path): \Generator
+    private function load(Path $path): \Generator
     {
-        $name = Str::of((string) $path)->leftTrim('/');
+        $name = Str::of($path->toString())->leftTrim('/')->toString();
         $url = "https://packagist.org/search.json?q=$name/";
         $results = [];
 
         do {
             $request = new Request(
-                Url::fromString($url),
+                Url::of($url),
                 Method::get(),
                 new ProtocolVersion(2, 0)
             );
             $response = ($this->fulfill)($request);
-            $content = Json::decode((string) $response->body());
+            $content = Json::decode($response->body()->toString());
             $results = \array_merge($results, $content['results']);
             $url = $content['next'] ?? null;
         } while (isset($content['next']));
@@ -72,12 +73,12 @@ final class Packagist implements Loader
             }
 
             $request = new Request(
-                Url::fromString("https://packagist.org/packages/{$result['name']}.json"),
+                Url::of("https://packagist.org/packages/{$result['name']}.json"),
                 Method::get(),
                 new ProtocolVersion(2, 0)
             );
             $response = ($this->fulfill)($request);
-            $content = Json::decode((string) $response->body())['package'];
+            $content = Json::decode($response->body()->toString())['package'];
 
             try {
                 yield $this->geneOf($content);
@@ -90,12 +91,13 @@ final class Packagist implements Loader
     private function geneOf(array $package): Gene
     {
         $versions = $package['versions'];
-        $published = Map::of(
-            'string',
-            'array',
-            \array_keys($versions),
-            \array_values($versions)
-        )
+        $published = Map::of('string', 'array');
+
+        foreach ($versions as $key => $value) {
+            $published = ($published)($key, $value);
+        }
+
+        $published = $published
             ->filter(static function(string $version): bool {
                 return VersionParser::parseStability($version) === 'stable';
             })
@@ -107,16 +109,16 @@ final class Packagist implements Loader
             throw new DomainException;
         }
 
-        $versions = Semver::rsort($published->keys()->toPrimitive());
+        $versions = Semver::rsort(unwrap($published->keys()));
 
         $latest = $published->get($versions[0]);
 
         if ($latest['type'] === 'project') {
             return Gene::template(
                 new Gene\Name($latest['name']),
-                Stream::of('string', ...($latest['extra']['gene']['expression'] ?? [])),
-                Stream::of('string', ...($latest['extra']['gene']['mutation'] ?? [])),
-                Stream::of('string', ...($latest['extra']['gene']['suppression'] ?? []))
+                Sequence::strings(...($latest['extra']['gene']['expression'] ?? [])),
+                Sequence::strings(...($latest['extra']['gene']['mutation'] ?? [])),
+                Sequence::strings(...($latest['extra']['gene']['suppression'] ?? []))
             );
         }
 
@@ -126,9 +128,9 @@ final class Packagist implements Loader
         ) {
             return Gene::functional(
                 new Gene\Name($latest['name']),
-                Stream::of('string', ...($latest['extra']['gene']['expression'] ?? [])),
-                Stream::of('string', ...($latest['extra']['gene']['mutation'] ?? [])),
-                Stream::of('string', ...($latest['extra']['gene']['suppression'] ?? []))
+                Sequence::strings(...($latest['extra']['gene']['expression'] ?? [])),
+                Sequence::strings(...($latest['extra']['gene']['mutation'] ?? [])),
+                Sequence::strings(...($latest['extra']['gene']['suppression'] ?? []))
             );
         }
 

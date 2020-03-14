@@ -17,8 +17,10 @@ use Innmind\Url\Path;
 use Innmind\Filesystem\{
     Adapter,
     File\File,
-    Stream\StringStream,
+    Name as FileName,
 };
+use Innmind\Stream\Readable\Stream;
+use Innmind\Json\Json;
 
 final class Express implements Command
 {
@@ -37,7 +39,7 @@ final class Express implements Command
     {
         ($this->express)(
             $gene = new Name($arguments->get('gene')),
-            $path = new Path($arguments->get('path'))
+            $path = Path::of($arguments->get('path'))
         );
 
         $this->persist($gene, $path);
@@ -47,26 +49,26 @@ final class Express implements Command
     {
         $expressed = [];
 
-        if ($this->filesystem->has(self::FILE)) {
+        if ($this->filesystem->contains(new FileName(self::FILE))) {
             $content = $this
                 ->filesystem
-                ->get(self::FILE)
+                ->get(new FileName(self::FILE))
                 ->content();
-            $expressed = json_decode((string) $content, true);
+            $expressed = Json::decode($content->toString());
         }
 
         $expressed[] = [
             'gene' => (string) $gene,
-            'path' => (string) $path,
+            'path' => $path->toString(),
         ];
 
-        $this->filesystem->add(new File(
+        $this->filesystem->add(File::named(
             self::FILE,
-            new StringStream(json_encode($expressed, JSON_PRETTY_PRINT))
+            Stream::ofContent(Json::encode($expressed, \JSON_PRETTY_PRINT))
         ));
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return <<<USAGE
 express gene path

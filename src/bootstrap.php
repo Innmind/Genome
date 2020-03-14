@@ -3,14 +3,14 @@ declare(strict_types = 1);
 
 namespace Innmind\Genome;
 
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\CLI\Commands;
 use Innmind\Filesystem\Adapter;
 use Innmind\Server\Control\Server;
 use Innmind\HttpTransport\Transport;
 
 function bootstrap(
-    PathInterface $genome,
+    Path $genome,
     Adapter $storage,
     Server $server,
     Transport $http

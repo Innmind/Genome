@@ -10,6 +10,7 @@ use Innmind\Genome\{
     Gene\Type,
 };
 use Innmind\Url\Path;
+use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class PHPTest extends TestCase
@@ -23,7 +24,7 @@ class PHPTest extends TestCase
     {
         $load = new PHP;
 
-        $genome = $load(new Path('genome.php'));
+        $genome = $load(Path::of('genome.php'));
 
         $this->assertInstanceOf(Genome::class, $genome);
         $this->assertTrue($genome->contains('innmind/infrastructure-neo4j'));
@@ -37,11 +38,11 @@ class PHPTest extends TestCase
         $this->assertSame(Type::functional(), $genome->get('innmind/tower')->type());
         $this->assertSame(
             ['tower listen 1337 --daemon'],
-            $genome->get('innmind/tower')->actions()->toPrimitive()
+            unwrap($genome->get('innmind/tower')->actions())
         );
         $this->assertSame(
             ['tower listen 1337 --daemon --restart'],
-            $genome->get('innmind/tower')->mutations()->toPrimitive()
+            unwrap($genome->get('innmind/tower')->mutations())
         );
     }
 }

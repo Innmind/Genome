@@ -9,7 +9,7 @@ use Innmind\Genome\{
     Exception\UnknownGene,
     Exception\GeneMutationFailed,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Server\Control\{
     Server,
     Server\Command,
@@ -26,7 +26,7 @@ final class Mutate
         $this->server = $server;
     }
 
-    public function __invoke(Name $gene, PathInterface $path): void
+    public function __invoke(Name $gene, Path $path): void
     {
         if (!$this->genome->contains((string) $gene)) {
             throw new UnknownGene((string) $gene);
@@ -43,9 +43,9 @@ final class Mutate
                     ->processes()
                     ->execute(
                         Command::foreground($action)
-                            ->withWorkingDirectory((string) $path)
-                    )
-                    ->wait();
+                            ->withWorkingDirectory($path)
+                    );
+                $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
                     throw new GeneMutationFailed((string) $gene->name());
@@ -53,13 +53,13 @@ final class Mutate
             });
     }
 
-    private function update(Gene $gene, PathInterface $path): void
+    private function update(Gene $gene, Path $path): void
     {
         switch ($gene->type()) {
             case Type::template():
                 $command = Command::foreground('composer')
                     ->withArgument('update')
-                    ->withWorkingDirectory((string) $path);
+                    ->withWorkingDirectory($path);
                 break;
 
             case Type::functional():
@@ -68,14 +68,14 @@ final class Mutate
                     ->withArgument('global')
                     ->withArgument('update')
                     ->withArgument((string) $gene->name())
-                    ->withWorkingDirectory((string) $path);
+                    ->withWorkingDirectory($path);
         }
 
         $process = $this
             ->server
             ->processes()
-            ->execute($command)
-            ->wait();
+            ->execute($command);
+        $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
             throw new GeneMutationFailed((string) $gene->name());

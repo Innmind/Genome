@@ -29,7 +29,7 @@ class PackagistTest extends TestCase
     {
         $load = new Packagist(http()['default']());
 
-        $genome = $load(new Path('/innmind'));
+        $genome = $load(Path::of('/innmind'));
 
         $this->assertCount(14, $genome->genes());
         $this->assertTrue($genome->contains('innmind/library'));
