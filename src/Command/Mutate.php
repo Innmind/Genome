@@ -51,7 +51,7 @@ final class Mutate implements Command
         foreach ($expressed as $gene) {
             ($this->mutate)(
                 new Name($gene['gene']),
-                Path::of($gene['path'])
+                Path::of($gene['path']),
             );
         }
     }

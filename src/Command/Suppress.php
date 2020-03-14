@@ -58,7 +58,7 @@ final class Suppress implements Command
             ) {
                 ($this->suppress)(
                     new Name($gene['gene']),
-                    Path::of($gene['path'])
+                    Path::of($gene['path']),
                 );
             }
         }

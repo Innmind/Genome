@@ -21,14 +21,12 @@ final class Genome
     public function __construct(Gene ...$genes)
     {
         /** @var Map<string, Gene> */
-        $this->genes = Sequence::of(Gene::class, ...$genes)->reduce(
-            Map::of('string', Gene::class),
-            static function(Map $genes, Gene $gene): Map {
-                return $genes->put(
-                    $gene->name()->toString(),
-                    $gene
-                );
-            }
+        $this->genes = Sequence::of(Gene::class, ...$genes)->toMapOf(
+            'string',
+            Gene::class,
+            static function(Gene $gene): \Generator {
+                yield $gene->name()->toString() => $gene;
+            },
         );
     }
 
@@ -80,9 +78,9 @@ final class Genome
         }
 
         foreach ($this->generate as $gene) {
-            $this->genes = $this->genes->put(
+            $this->genes = ($this->genes)(
                 $gene->name()->toString(),
-                $gene
+                $gene,
             );
         }
 

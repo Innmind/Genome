@@ -60,7 +60,7 @@ final class Gene
             $name,
             $actions ?? Sequence::strings(),
             $mutations ?? Sequence::strings(),
-            $suppressions ?? Sequence::strings()
+            $suppressions ?? Sequence::strings(),
         );
     }
 
@@ -80,7 +80,7 @@ final class Gene
             $name,
             $actions ?? Sequence::strings(),
             $mutations ?? Sequence::strings(),
-            $suppressions ?? Sequence::strings()
+            $suppressions ?? Sequence::strings(),
         );
     }
 

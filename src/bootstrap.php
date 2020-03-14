@@ -23,12 +23,12 @@ function bootstrap(
         new Command\Express($express, $storage),
         new Command\Mutate(
             new Mutate($genome, $server),
-            $storage
+            $storage,
         ),
         new Command\Suppress(
             new Suppress($genome, $server),
-            $storage
+            $storage,
         ),
-        new Command\Genes($genome)
+        new Command\Genes($genome),
     );
 }

@@ -58,7 +58,7 @@ final class Packagist implements Loader
             $request = new Request(
                 Url::of($url),
                 Method::get(),
-                new ProtocolVersion(2, 0)
+                new ProtocolVersion(2, 0),
             );
             $response = ($this->fulfill)($request);
             /** @var array{results: list<array{name: string, virtual?: bool}>, total: int, next?: string} */
@@ -79,7 +79,7 @@ final class Packagist implements Loader
             $request = new Request(
                 Url::of("https://packagist.org/packages/{$result['name']}.json"),
                 Method::get(),
-                new ProtocolVersion(2, 0)
+                new ProtocolVersion(2, 0),
             );
             $response = ($this->fulfill)($request);
             /** @var array{package: array{versions: array<string, array{abandoned?: bool, type: string, name: string, bin?: list<string>, extra?: array{gene?: array{expression?: list<string>, mutation?: list<string>, suppression?: list<string>}}}>}} */
@@ -115,7 +115,7 @@ final class Packagist implements Loader
                 return !($version['abandoned'] ?? false);
             });
 
-        if ($published->size() === 0) {
+        if ($published->empty()) {
             throw new DomainException;
         }
 
@@ -129,7 +129,7 @@ final class Packagist implements Loader
                 new Gene\Name($latest['name']),
                 Sequence::strings(...($latest['extra']['gene']['expression'] ?? [])),
                 Sequence::strings(...($latest['extra']['gene']['mutation'] ?? [])),
-                Sequence::strings(...($latest['extra']['gene']['suppression'] ?? []))
+                Sequence::strings(...($latest['extra']['gene']['suppression'] ?? [])),
             );
         }
 
@@ -141,7 +141,7 @@ final class Packagist implements Loader
                 new Gene\Name($latest['name']),
                 Sequence::strings(...($latest['extra']['gene']['expression'] ?? [])),
                 Sequence::strings(...($latest['extra']['gene']['mutation'] ?? [])),
-                Sequence::strings(...($latest['extra']['gene']['suppression'] ?? []))
+                Sequence::strings(...($latest['extra']['gene']['suppression'] ?? [])),
             );
         }
 

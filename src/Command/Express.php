@@ -39,7 +39,7 @@ final class Express implements Command
     {
         ($this->express)(
             $gene = new Name($arguments->get('gene')),
-            $path = Path::of($arguments->get('path'))
+            $path = Path::of($arguments->get('path')),
         );
 
         $this->persist($gene, $path);
@@ -66,7 +66,7 @@ final class Express implements Command
 
         $this->filesystem->add(File::named(
             self::FILE,
-            Stream::ofContent(Json::encode($expressed, \JSON_PRETTY_PRINT))
+            Stream::ofContent(Json::encode($expressed, \JSON_PRETTY_PRINT)),
         ));
     }
 

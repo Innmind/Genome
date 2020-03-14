@@ -43,7 +43,7 @@ final class Mutate
                     ->processes()
                     ->execute(
                         Command::foreground($action)
-                            ->withWorkingDirectory($path)
+                            ->withWorkingDirectory($path),
                     );
                 $process->wait();
 
