@@ -14,10 +14,18 @@ final class Gene
 {
     private Type $type;
     private Name $name;
+    /** @var Sequence<string> */
     private Sequence $actions;
+    /** @var Sequence<string> */
     private Sequence $mutations;
+    /** @var Sequence<string> */
     private Sequence $suppressions;
 
+    /**
+     * @param Sequence<string> $actions
+     * @param Sequence<string> $mutations
+     * @param Sequence<string> $suppressions
+     */
     private function __construct(
         Type $type,
         Name $name,
@@ -36,6 +44,11 @@ final class Gene
         $this->suppressions = $suppressions;
     }
 
+    /**
+     * @param Sequence<string>|null $actions
+     * @param Sequence<string>|null $mutations
+     * @param Sequence<string>|null $suppressions
+     */
     public static function template(
         Name $name,
         Sequence $actions = null,
@@ -51,6 +64,11 @@ final class Gene
         );
     }
 
+    /**
+     * @param Sequence<string>|null $actions
+     * @param Sequence<string>|null $mutations
+     * @param Sequence<string>|null $suppressions
+     */
     public static function functional(
         Name $name,
         Sequence $actions = null,

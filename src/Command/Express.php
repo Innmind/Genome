@@ -47,6 +47,7 @@ final class Express implements Command
 
     private function persist(Name $gene, Path $path): void
     {
+        /** @var list<array{gene: string, path: string}> */
         $expressed = [];
 
         if ($this->filesystem->contains(new FileName(self::FILE))) {
@@ -54,6 +55,7 @@ final class Express implements Command
                 ->filesystem
                 ->get(new FileName(self::FILE))
                 ->content();
+            /** @var list<array{gene: string, path: string}> */
             $expressed = Json::decode($content->toString());
         }
 

@@ -39,6 +39,7 @@ final class Suppress implements Command
             return;
         }
 
+        /** @var list<array{gene: string, path: string}> */
         $expressed = Json::decode(
             $this
                 ->filesystem

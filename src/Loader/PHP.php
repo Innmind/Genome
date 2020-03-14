@@ -13,6 +13,10 @@ final class PHP implements Loader
 {
     public function __invoke(Path $path): Genome
     {
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @var callable(): Genome $load
+         */
         $load = require $path->toString();
 
         return $load();

@@ -13,11 +13,14 @@ use Innmind\Immutable\{
 
 final class Genome
 {
+    /** @var Map<string, Gene> */
     private Map $genes;
+    /** @var \Generator<Gene>|null */
     private ?\Generator $generate = null;
 
     public function __construct(Gene ...$genes)
     {
+        /** @var Map<string, Gene> */
         $this->genes = Sequence::of(Gene::class, ...$genes)->reduce(
             Map::of('string', Gene::class),
             static function(Map $genes, Gene $gene): Map {
@@ -34,6 +37,9 @@ final class Genome
         return $load($path);
     }
 
+    /**
+     * @param \Generator<Gene> $generate
+     */
     public static function defer(\Generator $generate): self
     {
         $self = new self;
@@ -57,14 +63,16 @@ final class Genome
      */
     public function genes(): Set
     {
-        return $this->all()->values()->reduce(
-            Set::of(Name::class),
-            static function(Set $names, Gene $gene): Set {
-                return $names->add($gene->name());
-            }
+        /** @var Set<Name> */
+        return $this->all()->values()->toSetOf(
+            Name::class,
+            static fn(Gene $gene): \Generator => yield $gene->name(),
         );
     }
 
+    /**
+     * @return Map<string, Gene>
+     */
     private function all(): Map
     {
         if (!$this->generate instanceof \Generator || !$this->generate->valid()) {

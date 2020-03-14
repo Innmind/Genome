@@ -45,6 +45,9 @@ final class Packagist implements Loader
         return Genome::defer($this->load($path));
     }
 
+    /**
+     * @return \Generator<Gene>
+     */
     private function load(Path $path): \Generator
     {
         $name = Str::of($path->toString())->leftTrim('/')->toString();
@@ -58,10 +61,11 @@ final class Packagist implements Loader
                 new ProtocolVersion(2, 0)
             );
             $response = ($this->fulfill)($request);
+            /** @var array{results: list<array{name: string, virtual?: bool}>, total: int, next?: string} */
             $content = Json::decode($response->body()->toString());
             $results = \array_merge($results, $content['results']);
             $url = $content['next'] ?? null;
-        } while (isset($content['next']));
+        } while (!\is_null($url));
 
         foreach ($results as $result) {
             if (!Str::of($result['name'])->matches("~^$name/~")) {
@@ -78,7 +82,9 @@ final class Packagist implements Loader
                 new ProtocolVersion(2, 0)
             );
             $response = ($this->fulfill)($request);
-            $content = Json::decode($response->body()->toString())['package'];
+            /** @var array{package: array{versions: array<string, array{abandoned?: bool, type: string, name: string, bin?: list<string>, extra?: array{gene?: array{expression?: list<string>, mutation?: list<string>, suppression?: list<string>}}}>}} */
+            $body = Json::decode($response->body()->toString());
+            $content = $body['package'];
 
             try {
                 yield $this->geneOf($content);
@@ -88,9 +94,13 @@ final class Packagist implements Loader
         }
     }
 
+    /**
+     * @param array{versions: array<string, array{abandoned?: bool, type: string, name: string, bin?: list<string>, extra?: array{gene?: array{expression?: list<string>, mutation?: list<string>, suppression?: list<string>}}}>} $package
+     */
     private function geneOf(array $package): Gene
     {
         $versions = $package['versions'];
+        /** @var Map<string, array{abandoned?: bool, type: string, name: string, bin?: list<string>, extra?: array{gene?: array{expression?: list<string>, mutation?: list<string>, suppression?: list<string>}}}> */
         $published = Map::of('string', 'array');
 
         foreach ($versions as $key => $value) {
@@ -109,6 +119,7 @@ final class Packagist implements Loader
             throw new DomainException;
         }
 
+        /** @var list<string> */
         $versions = Semver::rsort(unwrap($published->keys()));
 
         $latest = $published->get($versions[0]);
