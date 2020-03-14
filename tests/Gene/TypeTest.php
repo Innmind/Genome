@@ -13,13 +13,13 @@ class TypeTest extends TestCase
         $template = Type::template();
 
         $this->assertInstanceOf(Type::class, $template);
-        $this->assertSame('template', (string) $template);
+        $this->assertSame('template', $template->toString());
         $this->assertSame($template, Type::template());
 
         $functional = Type::functional();
 
         $this->assertInstanceOf(Type::class, $functional);
-        $this->assertSame('functional', (string) $functional);
+        $this->assertSame('functional', $functional->toString());
         $this->assertSame($functional, Type::functional());
     }
 }

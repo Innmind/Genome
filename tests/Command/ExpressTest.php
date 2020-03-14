@@ -25,11 +25,12 @@ use Innmind\Server\Control\{
 use Innmind\Filesystem\{
     Adapter,
     File\File,
-    Stream\StringStream,
+    Name as FileName,
 };
+use Innmind\Stream\Readable\Stream;
 use Innmind\Immutable\{
     Map,
-    Stream,
+    Sequence,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -46,8 +47,8 @@ class ExpressTest extends TestCase
                 new Genome(
                     Gene::template(
                         new Name('foo/bar'),
-                        Stream::of('string'),
-                        Stream::of('string')
+                        Sequence::of('string'),
+                        Sequence::of('string')
                     )
                 ),
                 $this->server = $this->createMock(Server::class)
@@ -73,7 +74,7 @@ directory when calling the associated actions so the path must exist otherwise
 it will fail
 USAGE;
 
-        $this->assertSame($expected, (string) $this->command);
+        $this->assertSame($expected, $this->command->toString());
     }
 
     public function testExecution()
@@ -87,13 +88,12 @@ USAGE;
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'create-project' 'foo/bar' '/somewhere' '--no-dev' '--prefer-source' '--keep-vcs'";
+                return $command->toString() === "composer 'create-project' 'foo/bar' '/somewhere' '--no-dev' '--prefer-source' '--keep-vcs'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -101,8 +101,8 @@ USAGE;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(false);
         $this
             ->filesystem
@@ -118,16 +118,16 @@ USAGE;
 ]
 JSON;
 
-                return (string) $file->name() === 'expressed-genes.json' &&
-                    (string) $file->content() === $expected;
+                return $file->name()->toString() === 'expressed-genes.json' &&
+                    $file->content()->toString() === $expected;
             }));
 
         $this->assertNull(($this->command)(
             $this->createMock(Environment::class),
             new Arguments(
-                (new Map('string', 'mixed'))
-                    ->put('gene', 'foo/bar')
-                    ->put('path', '/somewhere')
+                Map::of('string', 'string')
+                    ('gene', 'foo/bar')
+                    ('path', '/somewhere')
             ),
             new Options
         ));
@@ -144,13 +144,12 @@ JSON;
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'create-project' 'foo/bar' '/somewhere' '--no-dev' '--prefer-source' '--keep-vcs'";
+                return $command->toString() === "composer 'create-project' 'foo/bar' '/somewhere' '--no-dev' '--prefer-source' '--keep-vcs'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -158,17 +157,17 @@ JSON;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(true);
         $this
             ->filesystem
             ->expects($this->once())
             ->method('get')
-            ->with('expressed-genes.json')
-            ->willReturn(new File(
+            ->with(new FileName('expressed-genes.json'))
+            ->willReturn(File::named(
                 'expressed-genes.json',
-                new StringStream('[{"gene":"innmind/warden","path":"/root"}]')
+                Stream::ofContent('[{"gene":"innmind/warden","path":"/root"}]')
             ));
         $this
             ->filesystem
@@ -188,16 +187,16 @@ JSON;
 ]
 JSON;
 
-                return (string) $file->name() === 'expressed-genes.json' &&
-                    (string) $file->content() === $expected;
+                return $file->name()->toString() === 'expressed-genes.json' &&
+                    $file->content()->toString() === $expected;
             }));
 
         $this->assertNull(($this->command)(
             $this->createMock(Environment::class),
             new Arguments(
-                (new Map('string', 'mixed'))
-                    ->put('gene', 'foo/bar')
-                    ->put('path', '/somewhere')
+                Map::of('string', 'string')
+                    ('gene', 'foo/bar')
+                    ('path', '/somewhere')
             ),
             new Options
         ));

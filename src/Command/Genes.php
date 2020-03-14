@@ -17,7 +17,7 @@ use Innmind\Immutable\Str;
 
 final class Genes implements Command
 {
-    private $genome;
+    private Genome $genome;
 
     public function __construct(Genome $genome)
     {
@@ -27,11 +27,11 @@ final class Genes implements Command
     public function __invoke(Environment $env, Arguments $arguments, Options $options): void
     {
         $this->genome->genes()->foreach(static function(Name $gene) use ($env): void {
-            $env->output()->write(Str::of((string) $gene)->append("\n"));
+            $env->output()->write(Str::of($gene->toString())->append("\n"));
         });
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return <<<USAGE
 genes

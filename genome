@@ -25,10 +25,16 @@ use Innmind\OperatingSystem\OperatingSystem;
 new class extends Main {
     protected function main(Environment $env, OperatingSystem $os): void
     {
+        $genome = 'innmind';
+
+        if ($env->variables()->contains('GENOME')) {
+            $genome = $env->variables()->get('GENOME');
+        }
+
         $run = bootstrap(
-            new Path($env->variables()['GENOME'] ?? 'innmind'),
+            Path::of($genome),
             $os->filesystem()->mount(
-                new Path($env->variables()->get('HOME').'/.innmind/genome')
+                Path::of($env->variables()->get('HOME').'/.innmind/genome/')
             ),
             $os->control(),
             $os->remote()->http()

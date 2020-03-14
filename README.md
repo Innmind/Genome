@@ -1,10 +1,8 @@
 # Genome
 
-| `master` | `develop` |
-|----------|-----------|
-| [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/Genome/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Innmind/Genome/?branch=master) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/Genome/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/Genome/?branch=develop) |
-| [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/Genome/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Innmind/Genome/?branch=master) | [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/Genome/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/Genome/?branch=develop) |
-| [![Build Status](https://scrutinizer-ci.com/g/Innmind/Genome/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Innmind/Genome/build-status/master) | [![Build Status](https://scrutinizer-ci.com/g/Innmind/Genome/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/Genome/build-status/develop) |
+[![Build Status](https://github.com/Innmind/Genome/workflows/CI/badge.svg)](https://github.com/Innmind/Genome/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/Innmind/Genome/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/Genome)
+[![Type Coverage](https://shepherd.dev/github/Innmind/Genome/coverage.svg)](https://shepherd.dev/github/Innmind/Genome)
 
 Tool to facilitate installation of composer projects on a server
 

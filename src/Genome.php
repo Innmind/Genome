@@ -4,38 +4,40 @@ declare(strict_types = 1);
 namespace Innmind\Genome;
 
 use Innmind\Genome\Gene\Name;
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Immutable\{
     Sequence,
-    MapInterface,
     Map,
-    SetInterface,
     Set,
 };
 
 final class Genome
 {
-    private $genes;
-    private $generate;
+    /** @var Map<string, Gene> */
+    private Map $genes;
+    /** @var \Generator<Gene>|null */
+    private ?\Generator $generate = null;
 
     public function __construct(Gene ...$genes)
     {
-        $this->genes = Sequence::of(...$genes)->reduce(
-            new Map('string', Gene::class),
-            static function(MapInterface $genes, Gene $gene): MapInterface {
-                return $genes->put(
-                    (string) $gene->name(),
-                    $gene
-                );
-            }
+        /** @var Map<string, Gene> */
+        $this->genes = Sequence::of(Gene::class, ...$genes)->toMapOf(
+            'string',
+            Gene::class,
+            static function(Gene $gene): \Generator {
+                yield $gene->name()->toString() => $gene;
+            },
         );
     }
 
-    public static function load(Loader $load, PathInterface $path): self
+    public static function load(Loader $load, Path $path): self
     {
         return $load($path);
     }
 
+    /**
+     * @param \Generator<Gene> $generate
+     */
     public static function defer(\Generator $generate): self
     {
         $self = new self;
@@ -44,39 +46,41 @@ final class Genome
         return $self;
     }
 
-    public function get(string $name): Gene
+    public function get(Name $name): Gene
     {
-        return $this->all()->get($name);
+        return $this->all()->get($name->toString());
     }
 
-    public function contains(string $name): bool
+    public function contains(Name $name): bool
     {
-        return $this->all()->contains($name);
+        return $this->all()->contains($name->toString());
     }
 
     /**
-     * @return SetInterface<Name>
+     * @return Set<Name>
      */
-    public function genes(): SetInterface
+    public function genes(): Set
     {
-        return $this->all()->values()->reduce(
-            Set::of(Name::class),
-            static function(SetInterface $names, Gene $gene): SetInterface {
-                return $names->add($gene->name());
-            }
+        /** @var Set<Name> */
+        return $this->all()->values()->toSetOf(
+            Name::class,
+            static fn(Gene $gene): \Generator => yield $gene->name(),
         );
     }
 
-    private function all(): MapInterface
+    /**
+     * @return Map<string, Gene>
+     */
+    private function all(): Map
     {
         if (!$this->generate instanceof \Generator || !$this->generate->valid()) {
             return $this->genes;
         }
 
         foreach ($this->generate as $gene) {
-            $this->genes = $this->genes->put(
-                (string) $gene->name(),
-                $gene
+            $this->genes = ($this->genes)(
+                $gene->name()->toString(),
+                $gene,
             );
         }
 

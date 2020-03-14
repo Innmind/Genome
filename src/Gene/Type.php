@@ -5,10 +5,10 @@ namespace Innmind\Genome\Gene;
 
 final class Type
 {
-    private static $template;
-    private static $functional;
+    private static ?self $template = null;
+    private static ?self $functional = null;
 
-    private $value;
+    private string $value;
 
     private function __construct(string $value)
     {
@@ -17,15 +17,15 @@ final class Type
 
     public static function template(): self
     {
-        return self::$template ?? self::$template = new self('template');
+        return self::$template ??= new self('template');
     }
 
     public static function functional(): self
     {
-        return self::$functional ?? self::$functional = new self('functional');
+        return self::$functional ??= new self('functional');
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

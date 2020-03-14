@@ -17,11 +17,8 @@ use Innmind\Server\Control\{
     Server\Process,
     Server\Process\ExitCode,
 };
-use Innmind\Url\{
-    PathInterface,
-    Path,
-};
-use Innmind\Immutable\Stream;
+use Innmind\Url\Path;
+use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class SuppressTest extends TestCase
@@ -36,7 +33,7 @@ class SuppressTest extends TestCase
         $this->expectException(UnknownGene::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $suppress(new Name('foo/bar'), $this->createMock(PathInterface::class));
+        $suppress(new Name('foo/bar'), Path::none());
     }
 
     public function testThrowWhenFailedToSuppressTemplate()
@@ -55,13 +52,12 @@ class SuppressTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "rm '-r' '/working/directory'";
+                return $command->toString() === "rm '-r' '/working/directory'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -70,7 +66,7 @@ class SuppressTest extends TestCase
         $this->expectException(GeneSuppressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $suppress(new Name('foo/bar'), new Path('/working/directory'));
+        $suppress(new Name('foo/bar'), Path::of('/working/directory'));
     }
 
     public function testThrowWhenFailedToSuppressFunctionalGene()
@@ -89,14 +85,13 @@ class SuppressTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'remove' 'foo/bar'" &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === "composer 'global' 'remove' 'foo/bar'" &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -105,7 +100,7 @@ class SuppressTest extends TestCase
         $this->expectException(GeneSuppressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $suppress(new Name('foo/bar'), new Path('/working/directory'));
+        $suppress(new Name('foo/bar'), Path::of('/working/directory'));
     }
 
     public function testThrowWhenSuppressionFails()
@@ -114,9 +109,9 @@ class SuppressTest extends TestCase
             new Genome(
                 Gene::functional(
                     new Name('foo/bar'),
-                    Stream::of('string'),
-                    Stream::of('string'),
-                    Stream::of('string', 'action1', 'action2')
+                    Sequence::of('string'),
+                    Sequence::of('string'),
+                    Sequence::of('string', 'action1', 'action2')
                 )
             ),
             $server = $this->createMock(Server::class)
@@ -129,14 +124,13 @@ class SuppressTest extends TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === 'action1' &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === 'action1' &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -145,7 +139,7 @@ class SuppressTest extends TestCase
         $this->expectException(GeneSuppressionFailed::class);
         $this->expectExceptionMessage('foo/bar');
 
-        $suppress(new Name('foo/bar'), new Path('/working/directory'));
+        $suppress(new Name('foo/bar'), Path::of('/working/directory'));
     }
 
     public function testSuppress()
@@ -154,9 +148,9 @@ class SuppressTest extends TestCase
             new Genome(
                 Gene::functional(
                     new Name('foo/bar'),
-                    Stream::of('string'),
-                    Stream::of('string'),
-                    Stream::of('string', 'action1', 'action2')
+                    Sequence::of('string'),
+                    Sequence::of('string'),
+                    Sequence::of('string', 'action1', 'action2')
                 )
             ),
             $server = $this->createMock(Server::class)
@@ -169,14 +163,13 @@ class SuppressTest extends TestCase
             ->expects($this->at(0))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === 'action1' &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === 'action1' &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -185,14 +178,13 @@ class SuppressTest extends TestCase
             ->expects($this->at(1))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === 'action2' &&
-                    $command->workingDirectory() === '/working/directory';
+                return $command->toString() === 'action2' &&
+                    $command->workingDirectory()->toString() === '/working/directory';
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -201,13 +193,12 @@ class SuppressTest extends TestCase
             ->expects($this->at(2))
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'remove' 'foo/bar'";
+                return $command->toString() === "composer 'global' 'remove' 'foo/bar'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')
@@ -216,6 +207,6 @@ class SuppressTest extends TestCase
             ->expects($this->exactly(3))
             ->method('execute');
 
-        $this->assertNull($suppress(new Name('foo/bar'), new Path('/working/directory')));
+        $this->assertNull($suppress(new Name('foo/bar'), Path::of('/working/directory')));
     }
 }

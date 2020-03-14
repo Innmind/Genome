@@ -4,60 +4,56 @@ use Innmind\Genome\{
     Genome,
     Gene,
 };
-use Innmind\Immutable\Stream;
+use Innmind\Immutable\Sequence;
 
 return function(): Genome {
     return new Genome(
         Gene::functional(
             new Gene\Name('innmind/installation-monitor'),
-            Stream::of('string', 'installation-monitor oversee --daemon'),
-            Stream::of('string'),
-            Stream::of('string', 'installation-monitor kill')
+            Sequence::strings('installation-monitor oversee --daemon'),
+            Sequence::strings(),
+            Sequence::strings('installation-monitor kill')
         ),
         Gene::functional(
             new Gene\Name('innmind/infrastructure-neo4j'),
-            Stream::of(
-                'string',
+            Sequence::strings(
                 'infrastructure-neo4j install',
                 'infrastructure-neo4j setup-user'
             )
         ),
         Gene::functional(
             new Gene\Name('innmind/infrastructure-nginx'),
-            Stream::of(
-                'string',
+            Sequence::strings(
                 'infrastructure-nginx install',
                 'infrastructure-nginx setup-site'
             )
         ),
         Gene::functional(
             new Gene\Name('innmind/infrastructure-amqp'),
-            Stream::of(
-                'string',
+            Sequence::strings(
                 'infrastructure-amqp install',
                 'infrastructure-amqp setup-users'
             )
         ),
         Gene::functional(
             new Gene\Name('innmind/tower'),
-            Stream::of('string', 'tower listen 1337 --daemon'),
-            Stream::of('string', 'tower listen 1337 --daemon --restart')
+            Sequence::strings('tower listen 1337 --daemon'),
+            Sequence::strings('tower listen 1337 --daemon --restart')
         ),
         Gene::functional(
             new Gene\Name('innmind/warden'),
-            Stream::of(
-                'string',
+            Sequence::strings(
                 'warden deploy',
                 'warden grant Baptouuuu'
             )
         ),
         Gene::template(
             new Gene\Name('innmind/library'),
-            Stream::of('string', 'bin/library install')
+            Sequence::strings('bin/library install')
         ),
         Gene::template(
             new Gene\Name('innmind/crawler-app'),
-            Stream::of('string', 'bin/crawler install')
+            Sequence::strings('bin/crawler install')
         )
     );
 };

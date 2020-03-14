@@ -30,7 +30,7 @@ class NameTest extends TestCase
             ->then(function(string $vendor, string $project): void {
                 $this->assertSame(
                     "$vendor/$project",
-                    (string) new Name("$vendor/$project")
+                    (new Name("$vendor/$project"))->toString()
                 );
             });
     }

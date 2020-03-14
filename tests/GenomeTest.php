@@ -9,11 +9,12 @@ use Innmind\Genome\{
     Gene\Name,
     Loader,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Immutable\{
-    SetInterface,
-    Stream,
+    Set,
+    Sequence,
 };
+use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class GenomeTest extends TestCase
@@ -21,26 +22,26 @@ class GenomeTest extends TestCase
     public function testInterface()
     {
         $genome = new Genome(
-            $first = Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string')),
-            $second = Gene::template(new Name('foo/baz'), Stream::of('string'), Stream::of('string'))
+            $first = Gene::template(new Name('foo/bar'), Sequence::of('string'), Sequence::of('string')),
+            $second = Gene::template(new Name('foo/baz'), Sequence::of('string'), Sequence::of('string'))
         );
 
-        $this->assertTrue($genome->contains('foo/bar'));
-        $this->assertTrue($genome->contains('foo/baz'));
-        $this->assertFalse($genome->contains('foobar'));
-        $this->assertSame($first, $genome->get('foo/bar'));
-        $this->assertSame($second, $genome->get('foo/baz'));
-        $this->assertInstanceOf(SetInterface::class, $genome->genes());
+        $this->assertTrue($genome->contains(new Name('foo/bar')));
+        $this->assertTrue($genome->contains(new Name('foo/baz')));
+        $this->assertFalse($genome->contains(new Name('bar/foo')));
+        $this->assertSame($first, $genome->get(new Name('foo/bar')));
+        $this->assertSame($second, $genome->get(new Name('foo/baz')));
+        $this->assertInstanceOf(Set::class, $genome->genes());
         $this->assertSame(Name::class, (string) $genome->genes()->type());
         $this->assertSame(
             [$first->name(), $second->name()],
-            $genome->genes()->toPrimitive()
+            unwrap($genome->genes()),
         );
     }
 
     public function testLoad()
     {
-        $path = $this->createMock(PathInterface::class);
+        $path = Path::none();
         $load = $this->createMock(Loader::class);
         $load
             ->expects($this->once())
@@ -72,10 +73,10 @@ class GenomeTest extends TestCase
 
         $this->assertInstanceOf(Genome::class, $genome);
         $this->assertFalse($loaded);
-        $this->assertTrue($genome->contains('innmind/installation-monitor'));
+        $this->assertTrue($genome->contains(new Name('innmind/installation-monitor')));
         $this->assertTrue($loaded);
-        $this->assertTrue($genome->contains('innmind/foobar'));
-        $this->assertInstanceOf(Gene::class, $genome->get('innmind/installation-monitor'));
-        $this->assertInstanceOf(Gene::class, $genome->get('innmind/foobar'));
+        $this->assertTrue($genome->contains(new Name('innmind/foobar')));
+        $this->assertInstanceOf(Gene::class, $genome->get(new Name('innmind/installation-monitor')));
+        $this->assertInstanceOf(Gene::class, $genome->get(new Name('innmind/foobar')));
     }
 }

@@ -9,7 +9,7 @@ use Innmind\Genome\{
     Exception\UnknownGene,
     Exception\GeneSuppressionFailed,
 };
-use Innmind\Url\PathInterface;
+use Innmind\Url\Path;
 use Innmind\Server\Control\{
     Server,
     Server\Command,
@@ -17,8 +17,8 @@ use Innmind\Server\Control\{
 
 final class Suppress
 {
-    private $genome;
-    private $server;
+    private Genome $genome;
+    private Server $server;
 
     public function __construct(Genome $genome, Server $server)
     {
@@ -26,13 +26,13 @@ final class Suppress
         $this->server = $server;
     }
 
-    public function __invoke(Name $gene, PathInterface $path): void
+    public function __invoke(Name $gene, Path $path): void
     {
-        if (!$this->genome->contains((string) $gene)) {
-            throw new UnknownGene((string) $gene);
+        if (!$this->genome->contains($gene)) {
+            throw new UnknownGene($gene->toString());
         }
 
-        $gene = $this->genome->get((string) $gene);
+        $gene = $this->genome->get($gene);
 
         $gene
             ->suppressions()
@@ -42,24 +42,24 @@ final class Suppress
                     ->processes()
                     ->execute(
                         Command::foreground($action)
-                            ->withWorkingDirectory((string) $path)
-                    )
-                    ->wait();
+                            ->withWorkingDirectory($path),
+                    );
+                $process->wait();
 
                 if (!$process->exitCode()->isSuccessful()) {
-                    throw new GeneSuppressionFailed((string) $gene->name());
+                    throw new GeneSuppressionFailed($gene->name()->toString());
                 }
             });
         $this->delete($gene, $path);
     }
 
-    private function delete(Gene $gene, PathInterface $path): void
+    private function delete(Gene $gene, Path $path): void
     {
         switch ($gene->type()) {
             case Type::template():
                 $command = Command::foreground('rm')
                     ->withShortOption('r')
-                    ->withArgument((string) $path);
+                    ->withArgument($path->toString());
                 break;
 
             case Type::functional():
@@ -67,18 +67,18 @@ final class Suppress
                 $command = Command::foreground('composer')
                     ->withArgument('global')
                     ->withArgument('remove')
-                    ->withArgument((string) $gene->name())
-                    ->withWorkingDirectory((string) $path);
+                    ->withArgument($gene->name()->toString())
+                    ->withWorkingDirectory($path);
         }
 
         $process = $this
             ->server
             ->processes()
-            ->execute($command)
-            ->wait();
+            ->execute($command);
+        $process->wait();
 
         if (!$process->exitCode()->isSuccessful()) {
-            throw new GeneSuppressionFailed((string) $gene->name());
+            throw new GeneSuppressionFailed($gene->name()->toString());
         }
     }
 }

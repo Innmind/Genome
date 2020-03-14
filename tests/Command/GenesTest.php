@@ -18,7 +18,7 @@ use Innmind\CLI\{
 use Innmind\Stream\Writable;
 use Innmind\Immutable\{
     Str,
-    Stream,
+    Sequence,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -40,14 +40,14 @@ genes
 List all the genes that can be expressed
 USAGE;
 
-        $this->assertSame($expected, (string) new Genes(new Genome));
+        $this->assertSame($expected, (new Genes(new Genome))->toString());
     }
 
     public function testInvokation()
     {
         $command = new Genes(new Genome(
-            Gene::template(new Name('foo/bar'), Stream::of('string'), Stream::of('string')),
-            Gene::template(new Name('bar/baz'), Stream::of('string'), Stream::of('string'))
+            Gene::template(new Name('foo/bar'), Sequence::of('string'), Sequence::of('string')),
+            Gene::template(new Name('bar/baz'), Sequence::of('string'), Sequence::of('string'))
         ));
         $env = $this->createMock(Environment::class);
         $env

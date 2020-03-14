@@ -14,14 +14,18 @@ use Innmind\CLI\{
     Environment,
 };
 use Innmind\Url\Path;
-use Innmind\Filesystem\Adapter;
+use Innmind\Filesystem\{
+    Adapter,
+    Name as FileName,
+};
+use Innmind\Json\Json;
 
 final class Mutate implements Command
 {
     private const FILE = 'expressed-genes.json';
 
-    private $mutate;
-    private $filesystem;
+    private Runner $mutate;
+    private Adapter $filesystem;
 
     public function __construct(Runner $mutate, Adapter $filesystem)
     {
@@ -31,27 +35,28 @@ final class Mutate implements Command
 
     public function __invoke(Environment $env, Arguments $arguments, Options $options): void
     {
-        if (!$this->filesystem->has(self::FILE)) {
+        if (!$this->filesystem->contains(new FileName(self::FILE))) {
             return;
         }
 
-        $expressed = json_decode(
-            (string) $this
+        /** @var list<array{gene: string, path: string}> */
+        $expressed = Json::decode(
+            $this
                 ->filesystem
-                ->get(self::FILE)
-                ->content(),
-            true
+                ->get(new FileName(self::FILE))
+                ->content()
+                ->toString(),
         );
 
         foreach ($expressed as $gene) {
             ($this->mutate)(
                 new Name($gene['gene']),
-                new Path($gene['path'])
+                Path::of($gene['path']),
             );
         }
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return <<<USAGE
 mutate

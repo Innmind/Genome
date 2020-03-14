@@ -25,9 +25,10 @@ use Innmind\CLI\{
 use Innmind\Filesystem\{
     Adapter,
     File\File,
-    Stream\StringStream,
+    Name as FileName,
 };
-use Innmind\Immutable\Stream;
+use Innmind\Stream\Readable\Stream;
+use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class MutateTest extends TestCase
@@ -43,8 +44,8 @@ class MutateTest extends TestCase
                 new Genome(
                     Gene::functional(
                         new Name('foo/bar'),
-                        Stream::of('string'),
-                        Stream::of('string')
+                        Sequence::of('string'),
+                        Sequence::of('string')
                     )
                 ),
                 $this->server = $this->createMock(Server::class)
@@ -66,7 +67,7 @@ mutate
 Will update all the expressed genes
 USAGE;
 
-        $this->assertSame($expected, (string) $this->command);
+        $this->assertSame($expected, $this->command->toString());
     }
 
     public function testDoesNothingWhenNoFile()
@@ -74,8 +75,8 @@ USAGE;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(false);
         $this
             ->server
@@ -94,17 +95,17 @@ USAGE;
         $this
             ->filesystem
             ->expects($this->once())
-            ->method('has')
-            ->with('expressed-genes.json')
+            ->method('contains')
+            ->with(new FileName('expressed-genes.json'))
             ->willReturn(true);
         $this
             ->filesystem
             ->expects($this->once())
             ->method('get')
-            ->with('expressed-genes.json')
-            ->willReturn(new File(
+            ->with(new FileName('expressed-genes.json'))
+            ->willReturn(File::named(
                 'expressed-genes.json',
-                new StringStream('[{"gene":"foo/bar","path":"/somewhere"}]')
+                Stream::ofContent('[{"gene":"foo/bar","path":"/somewhere"}]')
             ));
         $this
             ->server
@@ -115,13 +116,12 @@ USAGE;
             ->expects($this->once())
             ->method('execute')
             ->with($this->callback(static function($command): bool {
-                return (string) $command === "composer 'global' 'update' 'foo/bar'";
+                return $command->toString() === "composer 'global' 'update' 'foo/bar'";
             }))
             ->willReturn($process = $this->createMock(Process::class));
         $process
             ->expects($this->once())
-            ->method('wait')
-            ->will($this->returnSelf());
+            ->method('wait');
         $process
             ->expects($this->once())
             ->method('exitCode')

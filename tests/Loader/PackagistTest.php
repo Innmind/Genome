@@ -7,6 +7,7 @@ use Innmind\Genome\{
     Loader\Packagist,
     Loader,
     Genome,
+    Gene\Name,
 };
 use Innmind\Url\Path;
 use Innmind\HttpTransport\Transport;
@@ -29,21 +30,21 @@ class PackagistTest extends TestCase
     {
         $load = new Packagist(http()['default']());
 
-        $genome = $load(new Path('/innmind'));
+        $genome = $load(Path::of('/innmind'));
 
         $this->assertCount(14, $genome->genes());
-        $this->assertTrue($genome->contains('innmind/library'));
-        $this->assertTrue($genome->contains('innmind/crawler-app'));
-        $this->assertTrue($genome->contains('innmind/profiler'));
-        $this->assertTrue($genome->contains('innmind/installation-monitor'));
-        $this->assertTrue($genome->contains('innmind/infrastructure-neo4j'));
-        $this->assertTrue($genome->contains('innmind/infrastructure-amqp'));
-        $this->assertTrue($genome->contains('innmind/infrastructure-nginx'));
-        $this->assertTrue($genome->contains('innmind/tower'));
-        $this->assertTrue($genome->contains('innmind/warden'));
-        $this->assertTrue($genome->contains('innmind/git-release'));
-        $this->assertTrue($genome->contains('innmind/lab-station'));
-        $this->assertTrue($genome->contains('innmind/dependency-graph'));
-        $this->assertTrue($genome->contains('innmind/genome'));
+        $this->assertTrue($genome->contains(new Name('innmind/library')));
+        $this->assertTrue($genome->contains(new Name('innmind/crawler-app')));
+        $this->assertTrue($genome->contains(new Name('innmind/profiler')));
+        $this->assertTrue($genome->contains(new Name('innmind/installation-monitor')));
+        $this->assertTrue($genome->contains(new Name('innmind/infrastructure-neo4j')));
+        $this->assertTrue($genome->contains(new Name('innmind/infrastructure-amqp')));
+        $this->assertTrue($genome->contains(new Name('innmind/infrastructure-nginx')));
+        $this->assertTrue($genome->contains(new Name('innmind/tower')));
+        $this->assertTrue($genome->contains(new Name('innmind/warden')));
+        $this->assertTrue($genome->contains(new Name('innmind/git-release')));
+        $this->assertTrue($genome->contains(new Name('innmind/lab-station')));
+        $this->assertTrue($genome->contains(new Name('innmind/dependency-graph')));
+        $this->assertTrue($genome->contains(new Name('innmind/genome')));
     }
 }
