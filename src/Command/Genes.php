@@ -17,7 +17,7 @@ use Innmind\Immutable\Str;
 
 final class Genes implements Command
 {
-    private $genome;
+    private Genome $genome;
 
     public function __construct(Genome $genome)
     {

@@ -20,8 +20,8 @@ final class Suppress implements Command
 {
     private const FILE = 'expressed-genes.json';
 
-    private $suppress;
-    private $filesystem;
+    private Runner $suppress;
+    private Adapter $filesystem;
 
     public function __construct(Runner $suppress, Adapter $filesystem)
     {

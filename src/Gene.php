@@ -14,11 +14,11 @@ use Innmind\Immutable\{
 
 final class Gene
 {
-    private $type;
-    private $name;
-    private $actions;
-    private $mutations;
-    private $suppressions;
+    private Type $type;
+    private Name $name;
+    private StreamInterface $actions;
+    private StreamInterface $mutations;
+    private StreamInterface $suppressions;
 
     private function __construct(
         Type $type,

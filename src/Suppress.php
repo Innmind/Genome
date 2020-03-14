@@ -17,8 +17,8 @@ use Innmind\Server\Control\{
 
 final class Suppress
 {
-    private $genome;
-    private $server;
+    private Genome $genome;
+    private Server $server;
 
     public function __construct(Genome $genome, Server $server)
     {

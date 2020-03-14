@@ -15,7 +15,7 @@
         "issues": "http://github.com/Innmind/Genome/issues"
     },
     "require": {
-        "php": "~7.2",
+        "php": "~7.4",
         "innmind/immutable": "^2.8",
         "innmind/url": "^2.0",
         "innmind/server-control": "^2.3",

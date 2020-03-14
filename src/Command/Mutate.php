@@ -20,8 +20,8 @@ final class Mutate implements Command
 {
     private const FILE = 'expressed-genes.json';
 
-    private $mutate;
-    private $filesystem;
+    private Runner $mutate;
+    private Adapter $filesystem;
 
     public function __construct(Runner $mutate, Adapter $filesystem)
     {

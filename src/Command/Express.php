@@ -24,8 +24,8 @@ final class Express implements Command
 {
     private const FILE = 'expressed-genes.json';
 
-    private $express;
-    private $filesystem;
+    private Runner $express;
+    private Adapter $filesystem;
 
     public function __construct(Runner $express, Adapter $filesystem)
     {

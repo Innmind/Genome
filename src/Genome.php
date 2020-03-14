@@ -15,8 +15,8 @@ use Innmind\Immutable\{
 
 final class Genome
 {
-    private $genes;
-    private $generate;
+    private Map $genes;
+    private ?\Generator $generate = null;
 
     public function __construct(Gene ...$genes)
     {
