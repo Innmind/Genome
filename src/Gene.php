@@ -22,5 +22,9 @@ interface Gene
     /**
      * @throws ExpressionFailed
      */
-    public function express(OperatingSystem $local, Server $target): void;
+    public function express(
+        OperatingSystem $local,
+        Server $target,
+        History $History
+    ): History;
 }
