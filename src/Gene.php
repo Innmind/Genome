@@ -16,10 +16,6 @@ interface Gene
 
     /**
      * @throws PreConditionFailed
-     */
-    public function canBeExpressedAt(Server $target): void;
-
-    /**
      * @throws ExpressionFailed
      */
     public function express(
