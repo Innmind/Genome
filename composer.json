@@ -15,7 +15,8 @@
         "issues": "http://github.com/Innmind/Genome/issues"
     },
     "require": {
-        "php": "~7.4"
+        "php": "~7.4",
+        "innmind/operating-system": "^2.1"
     },
     "autoload": {
         "psr-4": {
