@@ -8,12 +8,16 @@ use Innmind\Genome\Exception\{
     ExpressionFailed,
 };
 use Innmind\OperatingSystem\OperatingSystem;
-use Innmind\Server\Control\Server;
+use Innmind\Server\Control\{
+    Server as ServerInterface,
+    Server\Process\Output\Type,
+};
+use Innmind\Immutable\Str;
 
 final class Progress
 {
     private OperatingSystem $os;
-    private Server $target;
+    private ServerInterface $target;
     /** @var list<Gene> */
     private array $genes;
     /** @var \Closure(Gene, History): void */
@@ -24,10 +28,12 @@ final class Progress
     private \Closure $onPreConditionFailed;
     /** @var \Closure(ExpressionFailed, Gene, History): void */
     private \Closure $onExpressionFailed;
+    /** @var \Closure(ServerInterface): ServerInterface */
+    private \Closure $decorateServer;
 
     public function __construct(
         OperatingSystem $os,
-        Server $target,
+        ServerInterface $target,
         Gene $gene,
         Gene ...$genes
     ) {
@@ -38,6 +44,7 @@ final class Progress
         $this->onExpressed = static function(): void {};
         $this->onPreConditionFailed = static function(): void {};
         $this->onExpressionFailed = static function(): void {};
+        $this->decorateServer = static fn(ServerInterface $server): ServerInterface => $server;
     }
 
     /**
@@ -84,14 +91,32 @@ final class Progress
         return $self;
     }
 
+    /**
+     * @param callable(Str, Type): void $function
+     */
+    public function onOutput(callable $function): self
+    {
+        $decorateServer = $this->decorateServer;
+        $self = clone $this;
+        $self->decorateServer = static function(ServerInterface $server) use ($decorateServer, $function): ServerInterface {
+            return new Server(
+                $decorateServer($server),
+                \Closure::fromCallable($function),
+            );
+        };
+
+        return $self;
+    }
+
     public function wait(): History
     {
         $history = new History;
+        $target = ($this->decorateServer)($this->target);
 
         foreach ($this->genes as $gene) {
             try {
                 ($this->onStart)($gene, $history);
-                $history = $gene->express($this->os, $this->target, $history);
+                $history = $gene->express($this->os, $target, $history);
                 ($this->onExpressed)($gene, $history);
             } catch (PreConditionFailed $e) {
                 ($this->onPreConditionFailed)($e, $gene, $history);

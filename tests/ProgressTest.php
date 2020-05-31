@@ -7,6 +7,7 @@ use Innmind\Genome\{
     Progress,
     Gene,
     History,
+    Server as OwnServer,
     Exception\PreConditionFailed,
     Exception\ExpressionFailed,
 };
@@ -203,5 +204,33 @@ class ProgressTest extends TestCase
         $this->assertSame([], $count); // assert immutability of Progress
         $progress->wait();
         $this->assertCount(1, $count);
+    }
+
+    public function testOnOutput()
+    {
+        $os = $this->createMock(OperatingSystem::class);
+        $gene = $this->createMock(Gene::class);
+        $gene
+            ->expects($this->at(0))
+            ->method('express')
+            ->with($os, $this->callback(fn($target) => !$target instanceof OwnServer))
+            ->will($this->returnArgument(2));
+        $gene
+            ->expects($this->at(1))
+            ->method('express')
+            ->with($os, $this->callback(fn($target) => $target instanceof OwnServer))
+            ->will($this->returnArgument(2));
+
+        $initial = new Progress(
+            $os,
+            $this->createMock(Server::class),
+            $gene,
+        );
+        $progress = $initial->onOutput(function() {});
+
+        $this->assertNotSame($initial, $progress);
+        $this->assertInstanceOf(Progress::class, $progress);
+        $initial->wait(); // assert immutability of Progress
+        $progress->wait();
     }
 }
