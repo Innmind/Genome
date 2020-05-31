@@ -21,13 +21,12 @@
     "autoload": {
         "psr-4": {
             "Innmind\\Genome\\": "src/"
-        },
-        "files": ["src/bootstrap.php"]
+        }
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\Innmind\\Genome\\": "tests/",
-            "Fixture\\Innmind\\Genome\\": "fixtures/"
+            "Fixtures\\Innmind\\Genome\\": "fixtures/"
         }
     },
     "require-dev": {
