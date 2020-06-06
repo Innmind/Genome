@@ -90,4 +90,36 @@ class HistoryTest extends TestCase
                 $this->assertTrue($historyC->get($b)->empty());
             });
     }
+
+    public function testReduce()
+    {
+        $this
+            ->forAll(Set\Sequence::of(Set\Unicode::lengthBetween(1, 128)))
+            ->then(function($names) {
+                $history = new History;
+
+                foreach ($names as $name) {
+                    $history = $history->add($name);
+                }
+
+                $this->assertSame(
+                    $names,
+                    $history->reduce(
+                        [],
+                        function($carry, $event) {
+                            $carry[] = $event->name()->toString();
+
+                            return $carry;
+                        },
+                    ),
+                );
+                $this->assertSame(
+                    \implode('', $names),
+                    $history->reduce(
+                        '',
+                        fn($string, $event) => $string.$event->name()->toString(),
+                    ),
+                );
+            });
+    }
 }

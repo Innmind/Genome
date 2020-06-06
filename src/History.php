@@ -58,4 +58,17 @@ final class History
     {
         $this->events->foreach($function);
     }
+
+    /**
+     * @template R
+     *
+     * @param R $initial
+     * @param callable(R, Event): R $reducer
+     *
+     * @return R
+     */
+    public function reduce($initial, callable $reducer)
+    {
+        return $this->events->reduce($initial, $reducer);
+    }
 }
