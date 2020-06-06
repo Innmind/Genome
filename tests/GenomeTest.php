@@ -66,4 +66,20 @@ class GenomeTest extends TestCase
                 $this->assertInstanceOf(Progress::class, $genome->express($os, $url));
             });
     }
+
+    public function testForeach()
+    {
+        $this
+            ->forAll(Gene::list())
+            ->then(function($genes) {
+                $genome = new Genome(...$genes);
+                $called = 0;
+
+                $this->assertNull($genome->foreach(function($gene) use ($genes, &$called) {
+                    $this->assertContains($gene, $genes);
+                    ++$called;
+                }));
+                $this->assertCount($called, $genes);
+            });
+    }
 }

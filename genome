@@ -27,6 +27,7 @@ new class extends Main {
             ->useResilientOperatingSystem()
             ->commands(static fn($env, $os): array => [
                 new Command\Express($os),
+                new Command\Display($os),
             ]);
     }
 };

@@ -22,4 +22,14 @@ final class Genome
 
         return new Progress($os, $target, ...$this->genes);
     }
+
+    /**
+     * @param callable(Gene): void $function
+     */
+    public function foreach(callable $function): void
+    {
+        foreach ($this->genes as $gene) {
+            $function($gene);
+        }
+    }
 }
