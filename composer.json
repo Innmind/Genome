@@ -16,29 +16,23 @@
     },
     "require": {
         "php": "~7.4",
-        "innmind/immutable": "~3.5",
-        "innmind/url": "~3.3",
-        "innmind/operating-system": "~2.0",
-        "innmind/cli": "~2.0",
-        "innmind/json": "^1.1",
-        "composer/semver": "^1.5"
+        "innmind/operating-system": "^2.1",
+        "innmind/cli-framework": "^1.2"
     },
     "autoload": {
         "psr-4": {
             "Innmind\\Genome\\": "src/"
-        },
-        "files": ["src/bootstrap.php"]
+        }
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\Innmind\\Genome\\": "tests/",
-            "Fixture\\Innmind\\Genome\\": "fixtures/"
+            "Fixtures\\Innmind\\Genome\\": "fixtures/"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~8.0",
-        "giorgiosironi/eris": "^0.11.0",
-        "vimeo/psalm": "^3.9"
-    },
-    "bin": ["genome"]
+        "phpunit/phpunit": "~9.0",
+        "vimeo/psalm": "^3.9",
+        "innmind/black-box": "^4.9"
+    }
 }
