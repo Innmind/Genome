@@ -74,10 +74,10 @@ final class Express implements Command
         $genome
             ->express($this->os, $remote)
             ->onStart(static function(Gene $gene) use ($env): void {
-                $env->output()->write(Str::of("Expressing {$gene->name()}...\n"));
+                $env->output()->write(Str::of("# Expressing {$gene->name()}...\n"));
             })
             ->onExpressed(static function(Gene $gene) use ($env): void {
-                $env->output()->write(Str::of("{$gene->name()} expressed!\n"));
+                $env->output()->write(Str::of("# {$gene->name()} expressed!\n"));
             })
             ->onPreConditionFailed(static function(PreConditionFailed $e) use ($env): void {
                 $env->error()->write(Str::of("Pre condition failure: {$e->getMessage()}\n"));
@@ -87,7 +87,7 @@ final class Express implements Command
             })
             ->onCommand(
                 static function(Server\Command $command) use ($env): void {
-                    $env->output()->write(Str::of("Executing: {$command->toString()}\n"));
+                    $env->output()->write(Str::of("> {$command->toString()}\n"));
                 },
                 static function(Str $chunk, Type $type) use ($env): void {
                     if ($type === Type::output()) {

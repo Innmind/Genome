@@ -68,11 +68,11 @@ class ExpressTest extends TestCase
         $output
             ->expects($this->at(0))
             ->method('write')
-            ->with(Str::of("Expressing hello...\n"));
+            ->with(Str::of("# Expressing hello...\n"));
         $output
             ->expects($this->at(1))
             ->method('write')
-            ->with(Str::of("hello expressed!\n"));
+            ->with(Str::of("# hello expressed!\n"));
 
         $this->assertNull($express(
             $env,
@@ -101,11 +101,11 @@ class ExpressTest extends TestCase
                 $output
                     ->expects($this->at(0))
                     ->method('write')
-                    ->with(Str::of("Expressing hello...\n"));
+                    ->with(Str::of("# Expressing hello...\n"));
                 $output
                     ->expects($this->at(1))
                     ->method('write')
-                    ->with(Str::of("hello expressed!\n"));
+                    ->with(Str::of("# hello expressed!\n"));
 
                 $this->assertNull($express(
                     $env,
@@ -204,11 +204,11 @@ class ExpressTest extends TestCase
         $output
             ->expects($this->at(0))
             ->method('write')
-            ->with(Str::of("Expressing hello...\n"));
+            ->with(Str::of("# Expressing hello...\n"));
         $output
             ->expects($this->at(1))
             ->method('write')
-            ->with(Str::of("hello expressed!\n"));
+            ->with(Str::of("# hello expressed!\n"));
         $os
             ->expects($this->once())
             ->method('filesystem')
