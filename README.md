@@ -4,7 +4,11 @@
 [![codecov](https://codecov.io/gh/Innmind/Genome/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/Genome)
 [![Type Coverage](https://shepherd.dev/github/Innmind/Genome/coverage.svg)](https://shepherd.dev/github/Innmind/Genome)
 
-Tool to facilitate installation of composer projects on a server
+Tool to facilitate the setup of machines.
+
+The goal here is to provide a declarative way to setup machine without having to rely on config files that are not code. Here all the declaration is done via PHP so you can easily navigate from the declaration of a gene to the actual code being run.
+
+Since it's standard PHP, you can easily require genes provided by other packages by requiring the packages via Composer. Look for the `innmind/genome` virtual package on [packagist](https://packagist.org/providers/innmind/genome) for more genes.
 
 ## Installation
 
@@ -14,14 +18,28 @@ composer global require innmind/genome
 
 ## Usage
 
-```sh
-genome express innmind/installation-monitor ~/
+```php
+<?php
+# genome.php
+
+use Innmind\Genome\{
+    Genome,
+    Gene,
+};
+
+return new Genome(
+    new Gene\PHP(7, 4),
+    new Gene\Composer,
+    Gene\ComposerPackage::global('innmind/installation-monitor'),
+);
 ```
 
-This will load the [genome](genome.php) from this project and then will require the `innmind/installation-monitor` as a global dependency and call `installation-monitor oversee --daemon`
+```sh
+genome express path/to/genome.php --host=ssh://user@machine/
+```
 
-You can use your own genome by specifying the path to yours in the `GENOME` env variable before calling the cli tool.
+This will load the genome specified above and will sequencely install `php7.4`, `composer` and the package `innmind/silent-cartographer` as a global package.
 
-`genome mutate` will update all the expressed genes on the machine.
+You can omit the `--host` option and the install will happen on the local machine.
 
-`genome suppress innmind/installation-monitor ~/` will delete the dependency.
+You can use this tool to automate the bootstrap of machines.
