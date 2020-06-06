@@ -5,78 +5,81 @@ namespace Tests\Innmind\Genome;
 
 use Innmind\Genome\{
     Genome,
-    Gene,
-    Gene\Name,
-    Loader,
+    Progress,
 };
-use Innmind\Url\Path;
-use Innmind\Immutable\{
-    Set,
-    Sequence,
+use Innmind\OperatingSystem\{
+    OperatingSystem,
+    Remote,
 };
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\{
+    PHPUnit\BlackBox,
+    Set,
+};
+use Fixtures\Innmind\Genome\Gene;
+use Fixtures\Innmind\Url\Url;
 
 class GenomeTest extends TestCase
 {
-    public function testInterface()
-    {
-        $genome = new Genome(
-            $first = Gene::template(new Name('foo/bar'), Sequence::of('string'), Sequence::of('string')),
-            $second = Gene::template(new Name('foo/baz'), Sequence::of('string'), Sequence::of('string'))
-        );
+    use BlackBox;
 
-        $this->assertTrue($genome->contains(new Name('foo/bar')));
-        $this->assertTrue($genome->contains(new Name('foo/baz')));
-        $this->assertFalse($genome->contains(new Name('bar/foo')));
-        $this->assertSame($first, $genome->get(new Name('foo/bar')));
-        $this->assertSame($second, $genome->get(new Name('foo/baz')));
-        $this->assertInstanceOf(Set::class, $genome->genes());
-        $this->assertSame(Name::class, (string) $genome->genes()->type());
-        $this->assertSame(
-            [$first->name(), $second->name()],
-            unwrap($genome->genes()),
-        );
+    public function testLocalExpression()
+    {
+        $this
+            ->forAll(Gene::list())
+            ->then(function($genes) {
+                $genome = new Genome(...$genes);
+                $os = $this->createMock(OperatingSystem::class);
+                $os
+                    ->expects($this->once())
+                    ->method('control');
+                $os
+                    ->expects($this->never())
+                    ->method('remote');
+
+                $this->assertInstanceOf(Progress::class, $genome->express($os));
+            });
     }
 
-    public function testLoad()
+    public function testRemoteExpression()
     {
-        $path = Path::none();
-        $load = $this->createMock(Loader::class);
-        $load
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($path)
-            ->willReturn($expected = new Genome);
+        $this
+            ->forAll(
+                Gene::list(),
+                Url::any(),
+            )
+            ->then(function($genes, $url) {
+                $genome = new Genome(...$genes);
+                $os = $this->createMock(OperatingSystem::class);
+                $os
+                    ->expects($this->never())
+                    ->method('control');
+                $os
+                    ->expects($this->once())
+                    ->method('remote')
+                    ->willReturn($remote = $this->createMock(Remote::class));
+                $remote
+                    ->expects($this->once())
+                    ->method('ssh')
+                    ->with($url);
 
-        $genome = Genome::load($load, $path);
-
-        $this->assertSame($expected, $genome);
+                $this->assertInstanceOf(Progress::class, $genome->express($os, $url));
+            });
     }
 
-    public function testDefer()
+    public function testForeach()
     {
-        $loaded = false;
-        $genome = Genome::defer((function() use (&$loaded) {
-            yield Gene::functional(
-                new Gene\Name('innmind/installation-monitor')
-            );
+        $this
+            ->forAll(Gene::list())
+            ->then(function($genes) {
+                $genome = new Genome(...$genes);
+                $called = 0;
 
-            try {
-                yield Gene::functional(
-                    new Gene\Name('innmind/foobar')
-                );
-            } finally {
-                $loaded = true;
-            }
-        })());
-
-        $this->assertInstanceOf(Genome::class, $genome);
-        $this->assertFalse($loaded);
-        $this->assertTrue($genome->contains(new Name('innmind/installation-monitor')));
-        $this->assertTrue($loaded);
-        $this->assertTrue($genome->contains(new Name('innmind/foobar')));
-        $this->assertInstanceOf(Gene::class, $genome->get(new Name('innmind/installation-monitor')));
-        $this->assertInstanceOf(Gene::class, $genome->get(new Name('innmind/foobar')));
+                $this->assertNull($genome->foreach(function($gene) use ($genes, &$called) {
+                    $this->assertContains($gene, $genes);
+                    ++$called;
+                }));
+                $this->assertCount($called, $genes);
+            });
     }
 }

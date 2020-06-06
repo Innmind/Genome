@@ -3,12 +3,11 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\Genome\Command;
 
-use Innmind\Genome\Command\Express;
+use Innmind\Genome\Command\Display;
 use Innmind\OperatingSystem\{
     OperatingSystem,
     Factory,
     Filesystem,
-    Remote,
 };
 use Innmind\CLI\{
     Command,
@@ -16,10 +15,7 @@ use Innmind\CLI\{
     Command\Options,
     Environment,
 };
-use Innmind\Url\{
-    Path,
-    Url,
-};
+use Innmind\Url\Path;
 use Innmind\Stream\Writable;
 use Innmind\Immutable\{
     Str,
@@ -32,7 +28,7 @@ use Innmind\BlackBox\{
 };
 use Fixtures\Innmind\Url\Path as FPath;
 
-class ExpressTest extends TestCase
+class DisplayTest extends TestCase
 {
     use BlackBox;
 
@@ -40,20 +36,20 @@ class ExpressTest extends TestCase
     {
         $this->assertInstanceOf(
             Command::class,
-            new Express($this->createMock(OperatingSystem::class)),
+            new Display($this->createMock(OperatingSystem::class)),
         );
     }
 
     public function testUsage()
     {
         $this->assertNotEmpty(
-            (new Express($this->createMock(OperatingSystem::class)))->toString(),
+            (new Display($this->createMock(OperatingSystem::class)))->toString(),
         );
     }
 
     public function testUseLocalGenomeByDefault()
     {
-        $express = new Express(
+        $display = new Display(
             Factory::build(),
         );
         $env = $this->createMock(Environment::class);
@@ -66,15 +62,11 @@ class ExpressTest extends TestCase
             ->method('output')
             ->willReturn($output = $this->createMock(Writable::class));
         $output
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('write')
-            ->with(Str::of("# Expressing hello...\n"));
-        $output
-            ->expects($this->at(1))
-            ->method('write')
-            ->with(Str::of("# hello expressed!\n"));
+            ->with(Str::of("hello\n"));
 
-        $this->assertNull($express(
+        $this->assertNull($display(
             $env,
             new Arguments,
             new Options,
@@ -86,7 +78,7 @@ class ExpressTest extends TestCase
         $this
             ->forAll(FPath::any())
             ->then(function($workingDirectory) {
-                $express = new Express(
+                $display = new Display(
                     Factory::build(),
                 );
                 $env = $this->createMock(Environment::class);
@@ -99,15 +91,11 @@ class ExpressTest extends TestCase
                     ->method('output')
                     ->willReturn($output = $this->createMock(Writable::class));
                 $output
-                    ->expects($this->at(0))
+                    ->expects($this->once())
                     ->method('write')
-                    ->with(Str::of("# Expressing hello...\n"));
-                $output
-                    ->expects($this->at(1))
-                    ->method('write')
-                    ->with(Str::of("# hello expressed!\n"));
+                    ->with(Str::of("hello\n"));
 
-                $this->assertNull($express(
+                $this->assertNull($display(
                     $env,
                     new Arguments(
                         Map::of('string', 'string')
@@ -120,7 +108,7 @@ class ExpressTest extends TestCase
 
     public function testFailWhenGenomePathDoesntExist()
     {
-        $express = new Express(
+        $display = new Display(
             $os = $this->createMock(OperatingSystem::class),
         );
         $env = $this->createMock(Environment::class);
@@ -145,7 +133,7 @@ class ExpressTest extends TestCase
             ->with(Path::of(__DIR__.'/../../fixtures/genome.php'))
             ->willReturn(false);
 
-        $this->assertNull($express(
+        $this->assertNull($display(
             $env,
             new Arguments,
             new Options,
@@ -157,7 +145,7 @@ class ExpressTest extends TestCase
         $this
             ->forAll(FPath::any())
             ->then(function($workingDirectory) {
-                $express = new Express(
+                $display = new Display(
                     Factory::build(),
                 );
                 $env = $this->createMock(Environment::class);
@@ -173,7 +161,7 @@ class ExpressTest extends TestCase
                     ->expects($this->never())
                     ->method('output');
 
-                $this->assertNull($express(
+                $this->assertNull($display(
                     $env,
                     new Arguments(
                         Map::of('string', 'string')
@@ -182,57 +170,5 @@ class ExpressTest extends TestCase
                     new Options,
                 ));
             });
-    }
-
-    public function testExpressOnRemoteMachine()
-    {
-        $express = new Express(
-            $os = $this->createMock(OperatingSystem::class),
-        );
-        $env = $this->createMock(Environment::class);
-        $env
-            ->expects($this->once())
-            ->method('workingDirectory')
-            ->willReturn(Path::of(__DIR__.'/../../fixtures/'));
-        $env
-            ->expects($this->never())
-            ->method('exit');
-        $env
-            ->expects($this->any())
-            ->method('output')
-            ->willReturn($output = $this->createMock(Writable::class));
-        $output
-            ->expects($this->at(0))
-            ->method('write')
-            ->with(Str::of("# Expressing hello...\n"));
-        $output
-            ->expects($this->at(1))
-            ->method('write')
-            ->with(Str::of("# hello expressed!\n"));
-        $os
-            ->expects($this->once())
-            ->method('filesystem')
-            ->willReturn($filesystem = $this->createMock(Filesystem::class));
-        $filesystem
-            ->expects($this->once())
-            ->method('contains')
-            ->willReturn(true);
-        $os
-            ->expects($this->once())
-            ->method('remote')
-            ->willReturn($remote = $this->createMock(Remote::class));
-        $remote
-            ->expects($this->once())
-            ->method('ssh')
-            ->with(Url::of('ssh://example.com'));
-
-        $this->assertNull($express(
-            $env,
-            new Arguments,
-            new Options(
-                Map::of('string', 'string')
-                    ('host', 'ssh://example.com'),
-            ),
-        ));
     }
 }

@@ -4,8 +4,11 @@ declare(strict_types = 1);
 namespace Innmind\Genome\Command;
 
 use Innmind\Genome\{
-    Express as Runner,
-    Gene\Name,
+    Genome,
+    Gene,
+    History\Event,
+    Exception\PreConditionFailed,
+    Exception\ExpressionFailed,
 };
 use Innmind\CLI\{
     Command,
@@ -13,73 +16,104 @@ use Innmind\CLI\{
     Command\Options,
     Environment,
 };
-use Innmind\Url\Path;
-use Innmind\Filesystem\{
-    Adapter,
-    File\File,
-    Name as FileName,
+use Innmind\OperatingSystem\OperatingSystem;
+use Innmind\Server\Control\{
+    Server,
+    Server\Process\Output\Type
 };
-use Innmind\Stream\Readable\Stream;
-use Innmind\Json\Json;
+use Innmind\Url\{
+    Url,
+    Path,
+};
+use Innmind\Immutable\Str;
 
 final class Express implements Command
 {
-    private const FILE = 'expressed-genes.json';
+    private OperatingSystem $os;
 
-    private Runner $express;
-    private Adapter $filesystem;
-
-    public function __construct(Runner $express, Adapter $filesystem)
+    public function __construct(OperatingSystem $os)
     {
-        $this->express = $express;
-        $this->filesystem = $filesystem;
+        $this->os = $os;
     }
 
     public function __invoke(Environment $env, Arguments $arguments, Options $options): void
     {
-        ($this->express)(
-            $gene = new Name($arguments->get('gene')),
-            $path = Path::of($arguments->get('path')),
-        );
+        $path = $env->workingDirectory()->resolve(Path::of('genome.php'));
 
-        $this->persist($gene, $path);
-    }
-
-    private function persist(Name $gene, Path $path): void
-    {
-        /** @var list<array{gene: string, path: string}> */
-        $expressed = [];
-
-        if ($this->filesystem->contains(new FileName(self::FILE))) {
-            $content = $this
-                ->filesystem
-                ->get(new FileName(self::FILE))
-                ->content();
-            /** @var list<array{gene: string, path: string}> */
-            $expressed = Json::decode($content->toString());
+        if ($arguments->contains('genome')) {
+            $path = Path::of($arguments->get('genome'));
         }
 
-        $expressed[] = [
-            'gene' => $gene->toString(),
-            'path' => $path->toString(),
-        ];
+        if (!$this->os->filesystem()->contains($path)) {
+            $env->error()->write(Str::of("{$path->toString()} doesn't exist\n"));
+            $env->exit(1);
 
-        $this->filesystem->add(File::named(
-            self::FILE,
-            Stream::ofContent(Json::encode($expressed, \JSON_PRETTY_PRINT)),
-        ));
+            return;
+        }
+
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @var mixed
+         */
+        $genome = require $path->toString();
+
+        if (!$genome instanceof Genome) {
+            $env->error()->write(Str::of("{$path->toString()} must return a Genome object\n"));
+            $env->exit(1);
+
+            return;
+        }
+
+        $remote = null;
+
+        if ($options->contains('host')) {
+            /** @var Url */
+            $remote = Url::of($options->get('host'));
+        }
+
+        $genome
+            ->express($this->os, $remote)
+            ->onStart(static function(Gene $gene) use ($env): void {
+                $env->output()->write(Str::of("# Expressing {$gene->name()}...\n"));
+            })
+            ->onExpressed(static function(Gene $gene) use ($env): void {
+                $env->output()->write(Str::of("# {$gene->name()} expressed!\n"));
+            })
+            ->onPreConditionFailed(static function(PreConditionFailed $e) use ($env): void {
+                $env->error()->write(Str::of("Pre condition failure: {$e->getMessage()}\n"));
+            })
+            ->onExpressionFailed(static function(ExpressionFailed $e) use ($env): void {
+                $env->error()->write(Str::of("Expression failure: {$e->getMessage()}\n"));
+            })
+            ->onCommand(
+                static function(Server\Command $command) use ($env): void {
+                    $env->output()->write(Str::of("> {$command->toString()}\n"));
+                },
+                static function(Str $chunk, Type $type) use ($env): void {
+                    if ($type === Type::output()) {
+                        $env->output()->write($chunk);
+                    } else {
+                        $env->error()->write($chunk);
+                    }
+                }
+            )
+            ->wait()
+            ->foreach(static function(Event $event) use ($env): void {
+                $env->output()->write(Str::of("Event: {$event->name()->toString()}..."));
+            });
     }
 
     public function toString(): string
     {
         return <<<USAGE
-express gene path
+        express [genome] -h|--host=
 
-Express the given gene in the specified path
+        Will express on the system a set of genes
 
-When expressing a functional gene the path will be used as the working
-directory when calling the associated actions so the path must exist otherwise
-it will fail
-USAGE;
+        When no `genome` path provided it will look
+        for a genome.php in the working directory.
+        The --host option can contain an ssh url to
+        the server on which to express the genes.
+        USAGE;
     }
 }

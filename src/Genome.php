@@ -3,87 +3,33 @@ declare(strict_types = 1);
 
 namespace Innmind\Genome;
 
-use Innmind\Genome\Gene\Name;
-use Innmind\Url\Path;
-use Innmind\Immutable\{
-    Sequence,
-    Map,
-    Set,
-};
+use Innmind\OperatingSystem\OperatingSystem;
+use Innmind\Url\Url;
 
 final class Genome
 {
-    /** @var Map<string, Gene> */
-    private Map $genes;
-    /** @var \Generator<Gene>|null */
-    private ?\Generator $generate = null;
+    /** @var list<Gene> */
+    private array $genes;
 
-    public function __construct(Gene ...$genes)
+    public function __construct(Gene $gene, Gene ...$genes)
     {
-        /** @var Map<string, Gene> */
-        $this->genes = Sequence::of(Gene::class, ...$genes)->toMapOf(
-            'string',
-            Gene::class,
-            static function(Gene $gene): \Generator {
-                yield $gene->name()->toString() => $gene;
-            },
-        );
+        $this->genes = [$gene, ...$genes];
     }
 
-    public static function load(Loader $load, Path $path): self
+    public function express(OperatingSystem $os, Url $remote = null): Progress
     {
-        return $load($path);
+        $target = $remote ? $os->remote()->ssh($remote) : $os->control();
+
+        return new Progress($os, $target, ...$this->genes);
     }
 
     /**
-     * @param \Generator<Gene> $generate
+     * @param callable(Gene): void $function
      */
-    public static function defer(\Generator $generate): self
+    public function foreach(callable $function): void
     {
-        $self = new self;
-        $self->generate = $generate;
-
-        return $self;
-    }
-
-    public function get(Name $name): Gene
-    {
-        return $this->all()->get($name->toString());
-    }
-
-    public function contains(Name $name): bool
-    {
-        return $this->all()->contains($name->toString());
-    }
-
-    /**
-     * @return Set<Name>
-     */
-    public function genes(): Set
-    {
-        /** @var Set<Name> */
-        return $this->all()->values()->toSetOf(
-            Name::class,
-            static fn(Gene $gene): \Generator => yield $gene->name(),
-        );
-    }
-
-    /**
-     * @return Map<string, Gene>
-     */
-    private function all(): Map
-    {
-        if (!$this->generate instanceof \Generator || !$this->generate->valid()) {
-            return $this->genes;
+        foreach ($this->genes as $gene) {
+            $function($gene);
         }
-
-        foreach ($this->generate as $gene) {
-            $this->genes = ($this->genes)(
-                $gene->name()->toString(),
-                $gene,
-            );
-        }
-
-        return $this->genes;
     }
 }

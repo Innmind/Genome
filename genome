@@ -14,31 +14,20 @@ foreach ($paths as $file) {
     }
 }
 
-use function Innmind\Genome\bootstrap;
-use Innmind\CLI\{
+use Innmind\Genome\Command;
+use Innmind\CLI\Framework\{
     Main,
-    Environment,
+    Application,
 };
-use Innmind\Url\Path;
-use Innmind\OperatingSystem\OperatingSystem;
 
 new class extends Main {
-    protected function main(Environment $env, OperatingSystem $os): void
+    protected function configure(Application $app): Application
     {
-        $genome = 'innmind';
-
-        if ($env->variables()->contains('GENOME')) {
-            $genome = $env->variables()->get('GENOME');
-        }
-
-        $run = bootstrap(
-            Path::of($genome),
-            $os->filesystem()->mount(
-                Path::of($env->variables()->get('HOME').'/.innmind/genome/')
-            ),
-            $os->control(),
-            $os->remote()->http()
-        );
-        $run($env);
+        return $app
+            ->useResilientOperatingSystem()
+            ->commands(static fn($env, $os): array => [
+                new Command\Express($os),
+                new Command\Display($os),
+            ]);
     }
 };
