@@ -78,7 +78,7 @@ final class PHP implements Gene
             );
             $preCondition($target);
         } catch (ScriptFailed $e) {
-            throw new PreConditionFailed('brew is missing');
+            throw new PreConditionFailed('apt is missing');
         }
 
         try {
