@@ -20,10 +20,13 @@ use Innmind\Server\Control\{
 final class PHP implements Gene
 {
     private string $version;
+    /** @var list<string> */
+    private array $extensions;
 
-    public function __construct(int $major, int $minor)
+    public function __construct(int $major, int $minor, string ...$extensions)
     {
         $this->version = "$major.$minor";
+        $this->extensions = $extensions;
     }
 
     public function name(): string
@@ -81,6 +84,20 @@ final class PHP implements Gene
             throw new PreConditionFailed('apt is missing');
         }
 
+        $extensions = \array_map(
+            fn(string $extension): string => "php{$this->version}-$extension",
+            $this->extensions,
+        );
+        $aptInstall = Command::foreground('apt')
+            ->withArgument('install')
+            ->withShortOption('y')
+            ->withArgument("php{$this->version}");
+        $aptInstall = \array_reduce(
+            $extensions,
+            static fn(Command $install, string $extension): Command => $install->withArgument($extension),
+            $aptInstall,
+        );
+
         try {
             $install = new Script(
                 Command::foreground('apt')
@@ -91,10 +108,7 @@ final class PHP implements Gene
                     ->withArgument('ppa:ondrej/php'),
                 Command::foreground('apt')
                     ->withArgument('update'),
-                Command::foreground('apt')
-                    ->withArgument('install')
-                    ->withShortOption('y')
-                    ->withArgument("php{$this->version}"),
+                $aptInstall,
             );
             $install($target);
         } catch (ScriptFailed $e) {
