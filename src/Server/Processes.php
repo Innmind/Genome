@@ -16,25 +16,32 @@ use Innmind\Immutable\Str;
 final class Processes implements ProcessesInterface
 {
     private ProcessesInterface $processes;
+    /** @var \Closure(Command): void */
+    private \Closure $command;
     /** @var \Closure(Str, Type): void */
-    private \Closure $call;
+    private \Closure $output;
 
     /**
-     * @param \Closure(Str, Type): void $call
+     * @param \Closure(Command): void $command
+     * @param \Closure(Str, Type): void $output
      */
     public function __construct(
         ProcessesInterface $processes,
-        \Closure $call
+        \Closure $command,
+        \Closure $output
     ) {
         $this->processes = $processes;
-        $this->call = $call;
+        $this->command = $command;
+        $this->output = $output;
     }
 
     public function execute(Command $command): ProcessInterface
     {
+        ($this->command)($command);
+
         return new Process(
             $this->processes->execute($command),
-            $this->call,
+            $this->output,
         );
     }
 

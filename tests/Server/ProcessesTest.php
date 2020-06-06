@@ -24,14 +24,19 @@ class ProcessesTest extends TestCase
             new Processes(
                 $this->createMock(ProcessesInterface::class),
                 fn() => null,
+                fn() => null,
             ),
         );
     }
 
     public function testExecute()
     {
+        $expected = null;
         $processes = new Processes(
             $inner = $this->createMock(ProcessesInterface::class),
+            function($command) use (&$expected) {
+                $expected = $command;
+            },
             fn() => null,
         );
         $command = Command::foreground('echo');
@@ -44,12 +49,14 @@ class ProcessesTest extends TestCase
             Process::class,
             $processes->execute($command),
         );
+        $this->assertSame($expected, $command);
     }
 
     public function testKill()
     {
         $processes = new Processes(
             $inner = $this->createMock(ProcessesInterface::class),
+            fn() => null,
             fn() => null,
         );
         $pid = new Pid(42);

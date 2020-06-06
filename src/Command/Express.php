@@ -17,7 +17,10 @@ use Innmind\CLI\{
     Environment,
 };
 use Innmind\OperatingSystem\OperatingSystem;
-use Innmind\Server\Control\Server\Process\Output\Type;
+use Innmind\Server\Control\{
+    Server,
+    Server\Process\Output\Type
+};
 use Innmind\Url\{
     Url,
     Path,
@@ -82,13 +85,18 @@ final class Express implements Command
             ->onExpressionFailed(static function(ExpressionFailed $e) use ($env): void {
                 $env->error()->write(Str::of("Expression failure: {$e->getMessage()}\n"));
             })
-            ->onOutput(static function(Str $chunk, Type $type) use ($env): void {
-                if ($type === Type::output()) {
-                    $env->output()->write($chunk);
-                } else {
-                    $env->error()->write($chunk);
+            ->onCommand(
+                static function(Server\Command $command) use ($env): void {
+                    $env->output()->write(Str::of("Executing: {$command->toString()}\n"));
+                },
+                static function(Str $chunk, Type $type) use ($env): void {
+                    if ($type === Type::output()) {
+                        $env->output()->write($chunk);
+                    } else {
+                        $env->error()->write($chunk);
+                    }
                 }
-            })
+            )
             ->wait()
             ->foreach(static function(Event $event) use ($env): void {
                 $env->output()->write(Str::of("Event: {$event->name()->toString()}..."));

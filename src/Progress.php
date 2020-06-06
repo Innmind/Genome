@@ -10,6 +10,7 @@ use Innmind\Genome\Exception\{
 use Innmind\OperatingSystem\OperatingSystem;
 use Innmind\Server\Control\{
     Server as ServerInterface,
+    Server\Command,
     Server\Process\Output\Type,
 };
 use Innmind\Immutable\Str;
@@ -92,16 +93,22 @@ final class Progress
     }
 
     /**
-     * @param callable(Str, Type): void $function
+     * @param callable(Command): void $command
+     * @param (callable(Str, Type): void)|null $output
      */
-    public function onOutput(callable $function): self
-    {
+    public function onCommand(
+        callable $command,
+        callable $output = null
+    ): self {
+        /** @var callable(Str, Type): void */
+        $output ??= static function(Str $chunk, Type $type): void {};
         $decorateServer = $this->decorateServer;
         $self = clone $this;
-        $self->decorateServer = static function(ServerInterface $server) use ($decorateServer, $function): ServerInterface {
+        $self->decorateServer = static function(ServerInterface $server) use ($decorateServer, $command, $output): ServerInterface {
             return new Server(
                 $decorateServer($server),
-                \Closure::fromCallable($function),
+                \Closure::fromCallable($command),
+                \Closure::fromCallable($output),
             );
         };
 

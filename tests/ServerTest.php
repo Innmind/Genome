@@ -19,6 +19,7 @@ class RemoteServerTest extends TestCase
             new Server(
                 $this->createMock(ServerInterface::class),
                 fn() => null,
+                fn() => null,
             ),
         );
     }
@@ -27,6 +28,7 @@ class RemoteServerTest extends TestCase
     {
         $server = new Server(
             $this->createMock(ServerInterface::class),
+            fn() => null,
             fn() => null,
         );
 
@@ -37,6 +39,7 @@ class RemoteServerTest extends TestCase
     {
         $server = new Server(
             $inner = $this->createMock(ServerInterface::class),
+            fn() => null,
             fn() => null,
         );
         $inner
@@ -51,6 +54,7 @@ class RemoteServerTest extends TestCase
         $server = new Server(
             $inner = $this->createMock(ServerInterface::class),
             fn() => null,
+            fn() => null,
         );
         $inner
             ->expects($this->once())
@@ -63,6 +67,7 @@ class RemoteServerTest extends TestCase
     {
         $server = new Server(
             $inner = $this->createMock(ServerInterface::class),
+            fn() => null,
             fn() => null,
         );
         $inner

@@ -206,7 +206,7 @@ class ProgressTest extends TestCase
         $this->assertCount(1, $count);
     }
 
-    public function testOnOutput()
+    public function testOnCommand()
     {
         $os = $this->createMock(OperatingSystem::class);
         $gene = $this->createMock(Gene::class);
@@ -226,7 +226,7 @@ class ProgressTest extends TestCase
             $this->createMock(Server::class),
             $gene,
         );
-        $progress = $initial->onOutput(function() {});
+        $progress = $initial->onCommand(function() {});
 
         $this->assertNotSame($initial, $progress);
         $this->assertInstanceOf(Progress::class, $progress);
