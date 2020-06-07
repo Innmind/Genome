@@ -34,5 +34,6 @@
         "phpunit/phpunit": "~9.0",
         "vimeo/psalm": "^3.9",
         "innmind/black-box": "^4.9"
-    }
+    },
+    "bin": ["genome"]
 }
