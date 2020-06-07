@@ -99,7 +99,7 @@ final class Express implements Command
             )
             ->wait()
             ->foreach(static function(Event $event) use ($env): void {
-                $env->output()->write(Str::of("Event: {$event->name()->toString()}..."));
+                $env->output()->write(Str::of("Event: {$event->name()->toString()}...\n"));
             });
     }
 
