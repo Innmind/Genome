@@ -10,7 +10,7 @@ use Innmind\Server\Control\{
 };
 use PHPUnit\Framework\TestCase;
 
-class RemoteServerTest extends TestCase
+class ServerTest extends TestCase
 {
     public function testInterface()
     {
