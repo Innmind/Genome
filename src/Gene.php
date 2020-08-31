@@ -21,6 +21,6 @@ interface Gene
     public function express(
         OperatingSystem $local,
         Server $target,
-        History $History
+        History $history
     ): History;
 }
