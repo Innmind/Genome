@@ -33,7 +33,8 @@
     "require-dev": {
         "phpunit/phpunit": "~9.0",
         "vimeo/psalm": "^3.9",
-        "innmind/black-box": "^4.9"
+        "innmind/black-box": "^4.9",
+        "nikic/php-parser": "~4.6.0"
     },
     "bin": ["genome"]
 }
