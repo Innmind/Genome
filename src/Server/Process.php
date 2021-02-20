@@ -49,7 +49,7 @@ final class Process implements ProcessInterface
 
     public function wait(): void
     {
-        $this->output()->foreach(function() {});
+        $this->output()->foreach(static function() {});
 
         $this->process->wait();
     }

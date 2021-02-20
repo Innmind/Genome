@@ -18,8 +18,8 @@ class ServerTest extends TestCase
             ServerInterface::class,
             new Server(
                 $this->createMock(ServerInterface::class),
-                fn() => null,
-                fn() => null,
+                static fn() => null,
+                static fn() => null,
             ),
         );
     }
@@ -28,8 +28,8 @@ class ServerTest extends TestCase
     {
         $server = new Server(
             $this->createMock(ServerInterface::class),
-            fn() => null,
-            fn() => null,
+            static fn() => null,
+            static fn() => null,
         );
 
         $this->assertInstanceOf(Server\Processes::class, $server->processes());
@@ -39,8 +39,8 @@ class ServerTest extends TestCase
     {
         $server = new Server(
             $inner = $this->createMock(ServerInterface::class),
-            fn() => null,
-            fn() => null,
+            static fn() => null,
+            static fn() => null,
         );
         $inner
             ->expects($this->once())
@@ -53,8 +53,8 @@ class ServerTest extends TestCase
     {
         $server = new Server(
             $inner = $this->createMock(ServerInterface::class),
-            fn() => null,
-            fn() => null,
+            static fn() => null,
+            static fn() => null,
         );
         $inner
             ->expects($this->once())
@@ -67,8 +67,8 @@ class ServerTest extends TestCase
     {
         $server = new Server(
             $inner = $this->createMock(ServerInterface::class),
-            fn() => null,
-            fn() => null,
+            static fn() => null,
+            static fn() => null,
         );
         $inner
             ->expects($this->once())

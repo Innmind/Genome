@@ -23,8 +23,8 @@ class ProcessesTest extends TestCase
             ProcessesInterface::class,
             new Processes(
                 $this->createMock(ProcessesInterface::class),
-                fn() => null,
-                fn() => null,
+                static fn() => null,
+                static fn() => null,
             ),
         );
     }
@@ -34,10 +34,10 @@ class ProcessesTest extends TestCase
         $expected = null;
         $processes = new Processes(
             $inner = $this->createMock(ProcessesInterface::class),
-            function($command) use (&$expected) {
+            static function($command) use (&$expected) {
                 $expected = $command;
             },
-            fn() => null,
+            static fn() => null,
         );
         $command = Command::foreground('echo');
         $inner
@@ -56,8 +56,8 @@ class ProcessesTest extends TestCase
     {
         $processes = new Processes(
             $inner = $this->createMock(ProcessesInterface::class),
-            fn() => null,
-            fn() => null,
+            static fn() => null,
+            static fn() => null,
         );
         $pid = new Pid(42);
         $signal = Signal::terminate();
