@@ -1,6 +1,6 @@
 # Genome
 
-[![Build Status](https://github.com/Innmind/Genome/workflows/CI/badge.svg)](https://github.com/Innmind/Genome/actions?query=workflow%3ACI)
+[![Build Status](https://github.com/Innmind/Genome/workflows/CI/badge.svg?branch=master)](https://github.com/Innmind/Genome/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/Innmind/Genome/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/Genome)
 [![Type Coverage](https://shepherd.dev/github/Innmind/Genome/coverage.svg)](https://shepherd.dev/github/Innmind/Genome)
 
