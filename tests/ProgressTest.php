@@ -211,14 +211,12 @@ class ProgressTest extends TestCase
         $os = $this->createMock(OperatingSystem::class);
         $gene = $this->createMock(Gene::class);
         $gene
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('express')
-            ->with($os, $this->callback(fn($target) => !$target instanceof OwnServer))
-            ->will($this->returnArgument(2));
-        $gene
-            ->expects($this->at(1))
-            ->method('express')
-            ->with($os, $this->callback(fn($target) => $target instanceof OwnServer))
+            ->withConsecutive(
+                [$os, $this->callback(fn($target) => !$target instanceof OwnServer)],
+                [$os, $this->callback(fn($target) => $target instanceof OwnServer)],
+            )
             ->will($this->returnArgument(2));
 
         $initial = new Progress(
