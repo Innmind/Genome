@@ -28,7 +28,7 @@ class ProcessTest extends TestCase
             ProcessInterface::class,
             new Process(
                 $this->createMock(ProcessInterface::class),
-                fn() => null,
+                static fn() => null,
             ),
         );
     }
@@ -37,7 +37,7 @@ class ProcessTest extends TestCase
     {
         $process = new Process(
             $inner = $this->createMock(ProcessInterface::class),
-            fn() => null,
+            static fn() => null,
         );
         $inner
             ->expects($this->once())
@@ -51,7 +51,7 @@ class ProcessTest extends TestCase
     {
         $process = new Process(
             $inner = $this->createMock(ProcessInterface::class),
-            fn() => null,
+            static fn() => null,
         );
 
         $this->assertInstanceOf(Process\Output::class, $process->output());
@@ -61,7 +61,7 @@ class ProcessTest extends TestCase
     {
         $process = new Process(
             $inner = $this->createMock(ProcessInterface::class),
-            fn() => null,
+            static fn() => null,
         );
         $inner
             ->expects($this->once())
@@ -76,7 +76,7 @@ class ProcessTest extends TestCase
         $called = false;
         $process = new Process(
             $inner = $this->createMock(ProcessInterface::class),
-            function() use (&$called) {
+            static function() use (&$called) {
                 $called = true;
             },
         );
@@ -87,7 +87,7 @@ class ProcessTest extends TestCase
         $output
             ->expects($this->once())
             ->method('foreach')
-            ->with($this->callback(function($fn) {
+            ->with($this->callback(static function($fn) {
                 $fn(Str::of('foo'), Type::output());
 
                 return true;
@@ -107,7 +107,7 @@ class ProcessTest extends TestCase
             ->then(function($expected) {
                 $process = new Process(
                     $inner = $this->createMock(ProcessInterface::class),
-                    fn() => null,
+                    static fn() => null,
                 );
                 $inner
                     ->expects($this->once())

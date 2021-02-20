@@ -66,13 +66,12 @@ class ExpressTest extends TestCase
             ->method('output')
             ->willReturn($output = $this->createMock(Writable::class));
         $output
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('write')
-            ->with(Str::of("# Expressing hello...\n"));
-        $output
-            ->expects($this->at(1))
-            ->method('write')
-            ->with(Str::of("# hello expressed!\n"));
+            ->withConsecutive(
+                [Str::of("# Expressing hello...\n")],
+                [Str::of("# hello expressed!\n")],
+            );
 
         $this->assertNull($express(
             $env,
@@ -99,13 +98,12 @@ class ExpressTest extends TestCase
                     ->method('output')
                     ->willReturn($output = $this->createMock(Writable::class));
                 $output
-                    ->expects($this->at(0))
+                    ->expects($this->exactly(2))
                     ->method('write')
-                    ->with(Str::of("# Expressing hello...\n"));
-                $output
-                    ->expects($this->at(1))
-                    ->method('write')
-                    ->with(Str::of("# hello expressed!\n"));
+                    ->withConsecutive(
+                        [Str::of("# Expressing hello...\n")],
+                        [Str::of("# hello expressed!\n")],
+                    );
 
                 $this->assertNull($express(
                     $env,
@@ -202,13 +200,12 @@ class ExpressTest extends TestCase
             ->method('output')
             ->willReturn($output = $this->createMock(Writable::class));
         $output
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('write')
-            ->with(Str::of("# Expressing hello...\n"));
-        $output
-            ->expects($this->at(1))
-            ->method('write')
-            ->with(Str::of("# hello expressed!\n"));
+            ->withConsecutive(
+                [Str::of("# Expressing hello...\n")],
+                [Str::of("# hello expressed!\n")],
+            );
         $os
             ->expects($this->once())
             ->method('filesystem')

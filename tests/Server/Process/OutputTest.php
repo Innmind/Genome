@@ -48,7 +48,7 @@ class OutputTest extends TestCase
         $inner
             ->expects($this->once())
             ->method('foreach')
-            ->with($this->callback(function($fn) use ($expected) {
+            ->with($this->callback(static function($fn) use ($expected) {
                 $fn($expected, Type::output());
 
                 return true;
@@ -65,10 +65,10 @@ class OutputTest extends TestCase
     public function testReduce()
     {
         $carry = new \stdClass;
-        $reducer = function(){};
+        $reducer = static function() {};
         $output = new Output(
             $inner = $this->createMock(OutputInterface::class),
-            function() {},
+            static function() {},
         );
         $inner
             ->expects($this->once())
@@ -81,10 +81,10 @@ class OutputTest extends TestCase
 
     public function testFilter()
     {
-        $predicate = function(){};
+        $predicate = static function() {};
         $output = new Output(
             $inner = $this->createMock(OutputInterface::class),
-            function() {},
+            static function() {},
         );
         $inner
             ->expects($this->once())
@@ -97,10 +97,10 @@ class OutputTest extends TestCase
 
     public function testGroupBy()
     {
-        $discriminator = function(){};
+        $discriminator = static function() {};
         $output = new Output(
             $inner = $this->createMock(OutputInterface::class),
-            function() {},
+            static function() {},
         );
         $inner
             ->expects($this->once())
@@ -113,10 +113,10 @@ class OutputTest extends TestCase
 
     public function testPartition()
     {
-        $predicate = function(){};
+        $predicate = static function() {};
         $output = new Output(
             $inner = $this->createMock(OutputInterface::class),
-            function() {},
+            static function() {},
         );
         $inner
             ->expects($this->once())
@@ -134,7 +134,7 @@ class OutputTest extends TestCase
             ->then(function($expected) {
                 $output = new Output(
                     $inner = $this->createMock(OutputInterface::class),
-                    function() {},
+                    static function() {},
                 );
                 $inner
                     ->expects($this->once())

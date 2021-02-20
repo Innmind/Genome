@@ -61,7 +61,7 @@ class ProgressTest extends TestCase
 
                 $history = $progress->wait();
                 $names = \array_map(
-                    fn($gene) => $gene->name(),
+                    static fn($gene) => $gene->name(),
                     $genes,
                 );
 
@@ -83,7 +83,7 @@ class ProgressTest extends TestCase
                     ...$genes,
                 );
                 $count = [];
-                $progress = $initial->onStart(function($gene) use (&$count) {
+                $progress = $initial->onStart(static function($gene) use (&$count) {
                     $count[] = $gene->name();
                 });
 
@@ -94,7 +94,7 @@ class ProgressTest extends TestCase
                 $progress->wait();
                 $this->assertSame(
                     \array_map(
-                        fn($gene) => $gene->name(),
+                        static fn($gene) => $gene->name(),
                         $genes,
                     ),
                     $count,
@@ -113,7 +113,7 @@ class ProgressTest extends TestCase
                     ...$genes,
                 );
                 $count = [];
-                $progress = $initial->onExpressed(function($gene) use (&$count) {
+                $progress = $initial->onExpressed(static function($gene) use (&$count) {
                     $count[] = $gene->name();
                 });
 
@@ -124,7 +124,7 @@ class ProgressTest extends TestCase
                 $progress->wait();
                 $this->assertSame(
                     \array_map(
-                        fn($gene) => $gene->name(),
+                        static fn($gene) => $gene->name(),
                         $genes,
                     ),
                     $count,
@@ -157,7 +157,7 @@ class ProgressTest extends TestCase
             $gene3,
         );
         $count = [];
-        $progress = $initial->onPreConditionFailed(function($exception, $gene) use (&$count) {
+        $progress = $initial->onPreConditionFailed(static function($exception, $gene) use (&$count) {
             $count[] = $gene->name();
         });
 
@@ -194,7 +194,7 @@ class ProgressTest extends TestCase
             $gene3,
         );
         $count = [];
-        $progress = $initial->onExpressionFailed(function($exception, $gene) use (&$count) {
+        $progress = $initial->onExpressionFailed(static function($exception, $gene) use (&$count) {
             $count[] = $gene->name();
         });
 
@@ -211,14 +211,12 @@ class ProgressTest extends TestCase
         $os = $this->createMock(OperatingSystem::class);
         $gene = $this->createMock(Gene::class);
         $gene
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('express')
-            ->with($os, $this->callback(fn($target) => !$target instanceof OwnServer))
-            ->will($this->returnArgument(2));
-        $gene
-            ->expects($this->at(1))
-            ->method('express')
-            ->with($os, $this->callback(fn($target) => $target instanceof OwnServer))
+            ->withConsecutive(
+                [$os, $this->callback(static fn($target) => !$target instanceof OwnServer)],
+                [$os, $this->callback(static fn($target) => $target instanceof OwnServer)],
+            )
             ->will($this->returnArgument(2));
 
         $initial = new Progress(
@@ -226,7 +224,7 @@ class ProgressTest extends TestCase
             $this->createMock(Server::class),
             $gene,
         );
-        $progress = $initial->onCommand(function() {});
+        $progress = $initial->onCommand(static function() {});
 
         $this->assertNotSame($initial, $progress);
         $this->assertInstanceOf(Progress::class, $progress);

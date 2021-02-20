@@ -27,7 +27,7 @@ class HistoryTest extends TestCase
         $history = new History;
 
         $count = 0;
-        $this->assertNull($history->foreach(function($event) use (&$count) {
+        $this->assertNull($history->foreach(static function($event) use (&$count) {
             ++$count;
         }));
         $this->assertSame(0, $count);
@@ -106,7 +106,7 @@ class HistoryTest extends TestCase
                     $names,
                     $history->reduce(
                         [],
-                        function($carry, $event) {
+                        static function($carry, $event) {
                             $carry[] = $event->name()->toString();
 
                             return $carry;
@@ -117,7 +117,7 @@ class HistoryTest extends TestCase
                     \implode('', $names),
                     $history->reduce(
                         '',
-                        fn($string, $event) => $string.$event->name()->toString(),
+                        static fn($string, $event) => $string.$event->name()->toString(),
                     ),
                 );
             });
