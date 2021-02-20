@@ -15,7 +15,7 @@
         "issues": "http://github.com/Innmind/Genome/issues"
     },
     "require": {
-        "php": "~7.4",
+        "php": "~7.4|~8.0",
         "innmind/operating-system": "^2.1",
         "innmind/cli-framework": "^1.2"
     },
